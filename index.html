@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>pa.js Macroframework – Docs & Tutorial</title>
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f9fafb; color: #222; margin: 0; }
+    header, footer { background: #007acc; color: #fff; padding: 1.5rem 0; text-align: center; }
+    main { max-width: 900px; margin: 2rem auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 2rem; }
+    h1, h2, h3 { color: #007acc; }
+    nav { margin: 1rem 0 2rem 0; text-align: center; }
+    nav a { color: #007acc; margin: 0 1rem; text-decoration: none; font-weight: bold; }
+    nav a:hover { text-decoration: underline; }
+    code, pre { background: #f4f4f4; border-radius: 5px; padding: 0.2em 0.4em; font-size: 1em; }
+    ul, ol { margin-left: 1.5em; }
+    .feature-list { columns: 2; -webkit-columns: 2; -moz-columns: 2; }
+    @media (max-width: 700px) { main { padding: 1rem; } .feature-list { columns: 1; } }
+    .tutorial-step { background: #f5faff; border-left: 4px solid #007acc; margin-bottom: 1.5em; padding: 1em 1.5em; border-radius: 7px; }
+    .code-block { background: #222; color: #fff; padding: 1em; border-radius: 6px; overflow-x: auto; font-size: 1em; }
+    .toc { background: #f4f4f4; border-radius: 6px; padding: 0.7em 1.2em; margin-bottom: 1.5em; }
+    .toc a { color: #007acc; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>pa.js Macroframework v3.1.6</h1>
+    <p>Enterprise-grade, zero-dependency Node.js framework in a single file</p>
+  </header>
+
+  <nav>
+    <a href="https://pa.js.org">Website</a>
+    <a href="https://github.com/johnmwirigimahugu/pa">GitHub</a>
+    <a href="https://linkedin.com/in/johnmahugu">Author</a>
+    <a href="#tutorial">Tutorial</a>
+    <a href="#features">Features</a>
+    <a href="#install">Install</a>
+    <a href="#links">Links</a>
+  </nav>
+
+  <main>
+    <div class="toc">
+      <strong>Table of Contents:</strong>
+      <a href="#overview">Overview</a> |
+      <a href="#features">Features</a> |
+      <a href="#quickstart">Quickstart</a> |
+      <a href="#tutorial">Tutorial</a> |
+      <a href="#structure">Project Structure</a> |
+      <a href="#install">Install</a> |
+      <a href="#links">Links</a>
+    </div>
+
+    <h2 id="overview">🔰 Overview</h2>
+    <p>
+      <b>pa.js</b> is a single-file Node.js macroframework for building modern, scalable, secure, and real-time applications-no external packages required. Created by <b>John Mwirigi Mahugu ("Kesh")</b>, it bundles routing, middleware, ORM, templating, database, search, CLI tools, WebSockets, and more-all in one file.
+    </p>
+
+    <h2 id="features">📦 Features</h2>
+    <div class="feature-list">
+      <ul>
+        <li>Middleware & Routing (grouping, event-driven)</li>
+        <li>Advanced ORM (relations, migrations, transactions)</li>
+        <li>Template engine (inheritance, interpolation)</li>
+        <li>Embedded NoSQL DB (PajsDB)</li>
+        <li>Full-text search engine (PaJua)</li>
+        <li>CSRF, CORS, secure cookies, rate limiting</li>
+        <li>Session, flash, caching</li>
+        <li>CLI and test runner</li>
+        <li>WebSocket and long polling</li>
+        <li>File uploads/downloads, static files</li>
+        <li>HTML helper and AJAX (PaJSX)</li>
+        <li>Python/JS integration</li>
+      </ul>
+    </div>
+
+    <h2 id="quickstart">⚡ Quickstart</h2>
+    <div class="code-block">
+      <pre><code>// app.js
+const Pa = require('./pa.js');
+const app = new Pa();
+app.route('GET', '/', (req, res) => res.send('Hello, pa.js!'));
+app.listen(3000, () => console.log('Running on http://localhost:3000'));</code></pre>
+    </div>
+
+    <h2 id="tutorial">🛠️ Tutorial: Build a Customer Management App</h2>
+    <div class="tutorial-step">
+      <strong>Step 1: Project Setup</strong><br>
+      Download <code>pa.js</code> and create <code>cma.js</code>:
+      <div class="code-block">
+        <pre><code>curl -O https://raw.githubusercontent.com/johnmwirigimahugu/pa/main/pa.js
+touch cma.js</code></pre>
+      </div>
+    </div>
+    <div class="tutorial-step">
+      <strong>Step 2: Basic Routing and Templating</strong>
+      <div class="code-block">
+        <pre><code>// cma.js
+const Pa = require('./pa.js');
+const app = new Pa();
+app.static('/static', './public');
+app.route('GET', '/', async (req, res) => {
+  const customers = await Pa.R.find('customers');
+  res.render('index', { customers });
+});
+app.listen(3000, () => console.log('http://localhost:3000'));</code></pre>
+      </div>
+      <p>Create <code>views/index.html</code>:</p>
+      <div class="code-block">
+        <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Customer Management App&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Customer List&lt;/h1&gt;
+  &lt;ul&gt;
+    {% for customer in customers %}
+      &lt;li&gt;{{ customer.name }} - {{ customer.email }}&lt;/li&gt;
+    {% else %}
+      &lt;li&gt;No customers yet!&lt;/li&gt;
+    {% endfor %}
+  &lt;/ul&gt;
+  &lt;a href="/customers/add"&gt;Add New Customer&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      </div>
+    </div>
+    <div class="tutorial-step">
+      <strong>Step 3: ORM and Database Migrations</strong>
+      <div class="code-block">
+        <pre><code>(async () => {
+  await Pa.R.migrate('customers', {
+    id: 'string',
+    name: 'string',
+    email: 'string',
+    phone: 'string',
+    createdAt: 'datetime'
+  });
+})();</code></pre>
+      </div>
+    </div>
+    <div class="tutorial-step">
+      <strong>Step 4: Adding New Customers</strong>
+      <div class="code-block">
+        <pre><code>// Add route for form (GET)
+app.route('GET', '/customers/add', (req, res) => {
+  res.render('add-customer');
+});
+// Handle form submission (POST)
+app.route('POST', '/customers/add', async (req, res) => {
+  const { name, email, phone } = req.body;
+  const customer = await Pa.R.dispense('customers');
+  customer.name = name;
+  customer.email = email;
+  customer.phone = phone;
+  customer.createdAt = new Date();
+  await Pa.R.store(customer);
+  res.redirect('/');
+});</code></pre>
+      </div>
+      <p>Create <code>views/add-customer.html</code>:</p>
+      <div class="code-block">
+        <pre><code>&lt;form method="post" action="/customers/add"&gt;
+  &lt;input name="name" placeholder="Name" required&gt;&lt;br&gt;
+  &lt;input name="email" placeholder="Email" required&gt;&lt;br&gt;
+  &lt;input name="phone" placeholder="Phone"&gt;&lt;br&gt;
+  &lt;button type="submit"&gt;Add Customer&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+      </div>
+    </div>
+    <div class="tutorial-step">
+      <strong>Step 5: Search & Real-Time Updates</strong>
+      <div class="code-block">
+        <pre><code>// Search route
+app.route('GET', '/search', async (req, res) => {
+  const q = req.query.q || '';
+  const results = app.pajua.search(q);
+  res.render('search', { results });
+});
+
+// WebSocket for real-time updates
+const http = require('http');
+const server = http.createServer(app.handler());
+app.enableWebSocket(server);
+server.listen(3000, () => console.log('WebSocket running on port 3000'));</code></pre>
+      </div>
+    </div>
+    <p>🎉 <b>Done!</b> You now have a working Customer Management App with pa.js, including ORM, templates, search, and real-time updates.</p>
+
+    <h2 id="structure">📁 Suggested Project Structure</h2>
+    <div class="code-block">
+      <pre><code>project-root/
+├── pa.js                  # The framework file
+├── cma.js                 # Your entry point
+├── views/                 # Template files
+├── static/                # Static assets
+└── python-as-js/          # Python integration bridge (optional)
+</code></pre>
+    </div>
+
+    <h2 id="install">💾 Installation</h2>
+    <div class="code-block">
+      <pre><code>curl -O https://raw.githubusercontent.com/johnmwirigimahugu/pa/main/pa.js
+node app.js</code></pre>
+    </div>
+
+    <h2 id="links">🔗 Links & Resources</h2>
+    <ul>
+      <li><a href="https://pa.js.org">Official Website</a></li>
+      <li><a href="https://github.com/johnmwirigimahugu/pa">GitHub Repository</a></li>
+      <li><a href="https://pa.js.org/docs">Documentation</a></li>
+      <li><a href="https://pa.js.org/tutorials/customer-management-app">Customer Management App Tutorial</a></li>
+      <li><a href="https://linkedin.com/in/johnmahugu">Author: John Mwirigi Mahugu</a></li>
+    </ul>
+  </main>
+
+  <footer>
+    <p>MIT License © 2025 John Mwirigi Mahugu | <a href="https://pa.js.org" style="color:#fff;text-decoration:underline;">pa.js.org</a></p>
+  </footer>
+</body>
+</html>
