@@ -1,0 +1,44 @@
+Unicorn-PA.js v3.3 -2902 == 3000 LOC
+i need full documentation for my fullstack course and cookbook and user manual
+1. how to make an uploader and download simple file manager.
+2. project : multipage SPA corporate website
+3.  project : multipage SPA corporate website Dynamic with database and API full CMS
+4. project: how to make components & reuse ready made apps and components in my app project
+5. how to use mini apps like django and how to create them
+6. design patterns
+7. different architectural patterns and folder / file structure, MVC style, Monolithic style, modular or traditional and others
+8. system testing, unit testing ETC optimization to make the app serve millions of hits at enterprise grade
+9. RBAC and multi user authentication
+10. make a full chat rooms social media app like travesty media
+11. project twitter clone
+12. full uber cab hailing taxi uber clone with active maps
+13. guest book project
+14. video streaming web conferencing project
+15. key words and terminology used in the pa.js technology
+16. best practices and system development workflows and checklists and tasklists etc.
+17. how to use other libraries with my framework,how to use my framework in other libraries (my framework is pa.js @ pa.js.org)
+18. complete readme and other documentation for my github
+19. SPA MPA website for the pa.js framework hosted on github pages (static site) + domain is https://www/pa.js.org
+20. how to use microjs.com libraries in my pajs framework
+21. file and system and sys io low level operations using my framework
+22. Asynchronous development to allow my framework to scale
+23. user management and RBAC and Database operations full tutorials
+24. graphs tutorials
+25. paypal tutorial.
+26. JWT and json web tokens and CORS and other high performance building app techniques methodology and procedure full tutorial with sample project.
+27. devops how tos for my framework.
+28. nuget.org clone project
+29. job board and integrated HRM clone project
+30. kobotoolbox clone project :)
+31. sentry clone how to do cron jobs with pa.js and how to check performance and whether my site is up.
+32. shorturl link shortener project and also a clone of phpproxy (online proxy project)
+33. pa.js API: all Prpperties and methods and full usage example after comprehensive explanation about each. feature.
+34 pa.js : 
+	Introduction
+	syntax and best practices
+	Installation
+	Usage
+	Configuration
+	Styling
+	documentation complete.
+35. wiki for pa.js.org like https://github.com/mozilla/pdf.js/wiki

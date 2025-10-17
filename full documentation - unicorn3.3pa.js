@@ -1,3 +1,2367 @@
+continue and finish from where you left off
+
+
+give me a full technical write up in plain text of this framework including a full stack tutorial of all features that i can offer as a fullstack course on my university
+
+# Unicorn-PA.js Full-Stack Framework: Technical Documentation & University Course
+
+## Table of Contents
+1. Introduction to Unicorn-PA.js
+2. Architecture Overview
+3. Core Concepts
+4. Frontend Development
+5. Backend Development
+6. Database Integration
+7. State Management
+8. Component System
+9. Routing & Navigation
+10. API Communication
+11. Authentication & Security
+12. Performance Optimization
+13. Testing Strategies
+14. Deployment & Production
+15. Advanced Patterns
+16. Case Studies
+17. Future Directions
+
+---
+
+## 1. Introduction to Unicorn-PA.js
+
+### 1.1 What is Unicorn-PA.js?
+
+Unicorn-PA.js is a comprehensive, zero-dependency JavaScript framework designed for building modern web applications. It runs seamlessly on both client and server, combining the best features from multiple frameworks into a single, cohesive solution.
+
+### 1.2 Key Features
+
+- **Zero Dependencies**: No external libraries required
+- **Universal**: Runs on both browser and server environments
+- **Reactive State Management**: Built-in signals and effects system
+- **Component Architecture**: Reusable components with lifecycle hooks
+- **Advanced Routing**: Client-side routing with guards and parameters
+- **Hypermedia System**: Declarative attributes for dynamic UI updates
+- **Multi-threading Support**: Worker pool for CPU-intensive tasks
+- **Built-in ORM**: Data persistence with multiple storage engines
+- **Mobile Enhancements**: Geolocation, vibration, and notifications
+- **Integrated CSS Framework**: Responsive design system with utility classes
+- **Real-time Communication**: WebSocket and SSE support
+- **Performance Monitoring**: Built-in metrics collection
+
+### 1.3 Philosophy
+
+Unicorn-PA.js follows these core principles:
+
+- **Simplicity**: Minimal learning curve with intuitive APIs
+- **Performance**: Optimized for speed and efficiency
+- **Flexibility**: Adaptable to various project requirements
+- **Consistency**: Unified patterns across frontend and backend
+- **Accessibility**: Built with accessibility in mind
+- **Progressive Enhancement**: Works without JavaScript, enhanced with it
+
+---
+
+## 2. Architecture Overview
+
+### 2.1 Framework Structure
+
+Unicorn-PA.js is organized into several interconnected modules:
+
+```
+Unicorn-PA.js
+├── Core System
+│   ├── Configuration
+│   ├── Environment Detection
+│   ├── Utilities
+│   └── Event System
+├── State Management
+│   ├── Signals
+│   ├── Effects
+│   ├── Computed Values
+│   └── Store
+├── UI System
+│   ├── DOM Utilities
+│   ├── Component System
+│   ├── CSS Framework
+│   └── Hypermedia
+├── Routing
+│   ├── Router
+│   ├── Route Guards
+│   └── Navigation
+├── Communication
+│   ├── AJAX System
+│   ├── WebSocket
+│   └── Server-Side Events
+├── Data Persistence
+│   ├── ORM
+│   ├── Storage Engines
+│   └── Query Builder
+├── Advanced Features
+│   ├── Worker Pool
+│   ├── Mobile Enhancements
+│   ├── Chart System
+│   ├── Search Engine
+│   └── Notification System
+└── Development Tools
+    ├── Web CLI
+    ├── Performance Monitoring
+    └── Testing Framework
+```
+
+### 2.2 Execution Contexts
+
+Unicorn-PA.js operates in three main contexts:
+
+1. **Browser Context**: Client-side rendering and interaction
+2. **Server Context**: Server-side rendering and API handling
+3. **Worker Context**: Background processing for CPU-intensive tasks
+
+### 2.3 Data Flow
+
+The framework follows a unidirectional data flow pattern:
+
+```
+User Interaction → Event → State Update → UI Update
+```
+
+This predictable flow makes applications easier to debug and maintain.
+
+---
+
+## 3. Core Concepts
+
+### 3.1 Signals
+
+Signals are the foundation of reactivity in Unicorn-PA.js:
+
+```javascript
+// Create a signal
+const count = PA.signal(0);
+
+// Get value
+console.log(count.value); // 0
+
+// Set value
+count.value = 1;
+
+// Subscribe to changes
+count.subscribe((newValue, oldValue) => {
+  console.log(`Count changed from ${oldValue} to ${newValue}`);
+});
+```
+
+### 3.2 Effects
+
+Effects are side effects that run when their dependencies change:
+
+```javascript
+// Create an effect
+PA.effect(() => {
+  console.log(`Count is now: ${count.value}`);
+  document.getElementById('counter').textContent = count.value;
+});
+```
+
+### 3.3 Computed Values
+
+Computed values derive their state from other signals:
+
+```javascript
+// Create a computed signal
+const doubled = PA.computed(() => count.value * 2);
+
+// The value updates automatically when count changes
+console.log(doubled.value); // 2
+```
+
+### 3.4 Store
+
+The store provides centralized state management:
+
+```javascript
+// Create a store
+const appStore = new PA.QuantumStore({
+  user: null,
+  theme: 'light',
+  language: 'en'
+});
+
+// Get state
+const state = appStore.getState();
+
+// Update state
+appStore.setState({ user: { name: 'John', email: 'john@example.com' } });
+
+// Subscribe to changes
+appStore.subscribe((newState, prevState, action) => {
+  console.log('State changed:', action);
+});
+```
+
+---
+
+## 4. Frontend Development
+
+### 4.1 Component System
+
+Components are reusable UI elements with their own state and lifecycle:
+
+```javascript
+// Register a component
+PA.component.register('user-card', {
+  // Component template
+  template: `
+    <div class="pa-card pa-user-card">
+      <div class="pa-card-body">
+        <h3>{{user.name}}</h3>
+        <p>{{user.email}}</p>
+      </div>
+    </div>
+  `,
+  
+  // Component state
+  state: {
+    user: null
+  },
+  
+  // Lifecycle hooks
+  onMount: function(el) {
+    console.log('Component mounted');
+  },
+  
+  onUpdate: function(el) {
+    console.log('Component updated');
+  },
+  
+  onUnmount: function(el) {
+    console.log('Component unmounted');
+  }
+});
+
+// Use the component
+const userCard = PA.component.render('user-card', { 
+  user: { name: 'John', email: 'john@example.com' }
+});
+```
+
+### 4.2 Hypermedia Attributes
+
+Declarative attributes enable dynamic UI without explicit JavaScript:
+
+```html
+<!-- Data binding -->
+<input type="text" pa-bind="value:user.name">
+
+<!-- Conditional rendering -->
+<div pa-show="user.isLoggedIn">Welcome back!</div>
+
+<!-- Text content -->
+<span pa-text="user.name"></span>
+
+<!-- List rendering -->
+<div pa-each="users:user">
+  <div class="pa-card">
+    <h3 pa-text="user.name"></h3>
+    <p pa-text="user.email"></p>
+  </div>
+</div>
+
+<!-- Event handling -->
+<button pa-on:click="saveUser">Save</button>
+
+<!-- AJAX requests -->
+<button pa-post="/api/users" pa-target="#result" pa-swap="innerHTML">
+  Load Users
+</button>
+```
+
+### 4.3 CSS Framework
+
+The built-in CSS framework provides responsive design utilities:
+
+```html
+<!-- Layout -->
+<div class="pa-container">
+  <div class="pa-grid pa-grid-cols-1 pa-md:grid-cols-3">
+    <div>Column 1</div>
+    <div>Column 2</div>
+    <div>Column 3</div>
+  </div>
+</div>
+
+<!-- Components -->
+<div class="pa-card">
+  <div class="pa-card-header">
+    <h3>Card Title</h3>
+  </div>
+  <div class="pa-card-body">
+    <p>Card content</p>
+  </div>
+</div>
+
+<!-- Forms -->
+<div class="pa-form-group">
+  <label class="pa-label">Name</label>
+  <input type="text" class="pa-input-text" placeholder="Enter your name">
+</div>
+
+<button class="pa-button pa-button-primary">Submit</button>
+```
+
+---
+
+## 5. Backend Development
+
+### 5.1 Server Setup
+
+Unicorn-PA.js can run on the server with Node.js:
+
+```javascript
+// server.js
+const PA = require('unicorn-pa.js');
+
+// Create an app
+const app = new PA.App();
+
+// Middleware
+app.use(PA.middleware.cors());
+app.use(PA.middleware.json());
+app.use(PA.middleware.static('public'));
+
+// Routes
+app.get('/api/users', async (req, res) => {
+  const users = await PA.db.findAll('users');
+  res.json(users);
+});
+
+app.post('/api/users', async (req, res) => {
+  const user = await PA.db.create('users', req.body);
+  res.json(user);
+});
+
+// Start server
+app.listen(3000, () => {
+  console.log('Server running on port 3000');
+});
+```
+
+### 5.2 API Development
+
+Create RESTful APIs with minimal code:
+
+```javascript
+// Define a resource
+const UserResource = PA.resource('users', {
+  // List all users
+  index: async (req, res) => {
+    const users = await PA.db.findAll('users');
+    res.json(users);
+  },
+  
+  // Get a specific user
+  show: async (req, res) => {
+    const user = await PA.db.findById('users', req.params.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json(user);
+  },
+  
+  // Create a new user
+  create: async (req, res) => {
+    const user = await PA.db.create('users', req.body);
+    res.status(201).json(user);
+  },
+  
+  // Update a user
+  update: async (req, res) => {
+    const user = await PA.db.update('users', req.params.id, req.body);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json(user);
+  },
+  
+  // Delete a user
+  destroy: async (req, res) => {
+    const success = await PA.db.delete('users', req.params.id);
+    if (!success) return res.status(404).json({ error: 'User not found' });
+    res.status(204).send();
+  }
+});
+
+// Register the resource
+app.resource('/api', UserResource);
+```
+
+### 5.3 Middleware
+
+Create custom middleware for request processing:
+
+```javascript
+// Authentication middleware
+const authMiddleware = async (req, res, next) => {
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  
+  if (!token) {
+    return res.status(401).json({ error: 'No token provided' });
+  }
+  
+  try {
+    const user = await PA.auth.verifyToken(token);
+    req.user = user;
+    next();
+  } catch (error) {
+    res.status(401).json({ error: 'Invalid token' });
+  }
+};
+
+// Apply middleware to routes
+app.get('/api/profile', authMiddleware, (req, res) => {
+  res.json(req.user);
+});
+
+// Error handling middleware
+const errorHandler = (error, req, res, next) => {
+  console.error(error);
+  res.status(500).json({ error: 'Internal server error' });
+};
+
+app.use(errorHandler);
+```
+
+---
+
+## 6. Database Integration
+
+### 6.1 ORM Usage
+
+Unicorn-PA.js includes a built-in ORM with multiple storage engines:
+
+```javascript
+// Initialize the database
+const db = new PA.PajsDB();
+
+// Connect to a storage engine
+db.connect('default', { engine: 'sqlite', path: './data/app.db' });
+
+// Define a model
+db.model('user', {
+  id: 'string',
+  name: 'string',
+  email: 'string',
+  password: 'string',
+  role: 'string',
+  created_at: 'datetime',
+  updated_at: 'datetime'
+});
+
+// Create a user
+const user = await db.create('user', {
+  name: 'John Doe',
+  email: 'john@example.com',
+  password: 'hashed_password',
+  role: 'user'
+});
+
+// Find users
+const users = await db.find('user', { role: 'user' });
+
+// Update a user
+await db.update('user', 'user-id', { name: 'Jane Doe' });
+
+// Delete a user
+await db.delete('user', 'user-id');
+```
+
+### 6.2 Query Builder
+
+Use the query builder for complex queries:
+
+```javascript
+// Get all active users, ordered by name
+const users = await db.query('user')
+  .where('active', true)
+  .orderBy('name', 'asc')
+  .limit(10)
+  .execute();
+
+// Get users with a specific role
+const admins = await db.query('user')
+  .where('role', 'admin')
+  .execute();
+
+// Join queries
+const usersWithPosts = await db.query('user')
+  .join('post', 'user.id', 'post.user_id')
+  .where('post.published', true)
+  .execute();
+```
+
+### 6.3 Migrations
+
+Manage database schema changes with migrations:
+
+```javascript
+// Create a migration
+const migration = db.migration.create('create_users_table', {
+  up: async () => {
+    await db.schema.createTable('users', {
+      id: 'string PRIMARY KEY',
+      name: 'string NOT NULL',
+      email: 'string UNIQUE NOT NULL',
+      password: 'string NOT NULL',
+      role: 'string DEFAULT "user"',
+      created_at: 'datetime DEFAULT CURRENT_TIMESTAMP',
+      updated_at: 'datetime DEFAULT CURRENT_TIMESTAMP'
+    });
+  },
+  
+  down: async () => {
+    await db.schema.dropTable('users');
+  }
+});
+
+// Run migrations
+await db.migrate.up();
+```
+
+---
+
+## 7. State Management
+
+### 7.1 Local State
+
+Manage component-level state with signals:
+
+```javascript
+// Create a component with local state
+PA.component.register('counter', {
+  template: `
+    <div>
+      <p>Count: {{count}}</p>
+      <button pa-on:click="increment">+</button>
+      <button pa-on:click="decrement">-</button>
+    </div>
+  `,
+  
+  state: {
+    count: 0
+  },
+  
+  onMount: function(el) {
+    // Create signals for state
+    this.count = PA.signal(this.state.count);
+    
+    // Create methods
+    this.increment = () => {
+      this.count.value++;
+    };
+    
+    this.decrement = () => {
+      this.count.value--;
+    };
+    
+    // Bind signals to the template
+    PA.effect(() => {
+      el.querySelector('p').textContent = `Count: ${this.count.value}`;
+    });
+  }
+});
+```
+
+### 7.2 Global State
+
+Manage application-wide state with the store:
+
+```javascript
+// Create a global store
+const appStore = new PA.QuantumStore({
+  user: null,
+  theme: 'light',
+  language: 'en',
+  notifications: []
+});
+
+// Define actions
+const actions = {
+  setUser: (user) => {
+    appStore.setState({ user }, { type: 'SET_USER' });
+  },
+  
+  setTheme: (theme) => {
+    appStore.setState({ theme }, { type: 'SET_THEME' });
+  },
+  
+  addNotification: (notification) => {
+    appStore.setState(state => ({
+      notifications: [...state.notifications, notification]
+    }), { type: 'ADD_NOTIFICATION' });
+  }
+};
+
+// Use the store in components
+PA.component.register('user-profile', {
+  template: `
+    <div>
+      <h2 pa-text="user.name"></h2>
+      <p pa-text="user.email"></p>
+    </div>
+  `,
+  
+  onMount: function(el) {
+    // Subscribe to store changes
+    this.unsubscribe = appStore.subscribe((state) => {
+      if (state.user) {
+        el.querySelector('h2').textContent = state.user.name;
+        el.querySelector('p').textContent = state.user.email;
+      }
+    });
+  },
+  
+  onUnmount: function() {
+    // Clean up subscription
+    this.unsubscribe();
+  }
+});
+```
+
+### 7.3 Persistence
+
+Persist state to local storage or server:
+
+```javascript
+// Create a persistent store
+const persistentStore = new PA.QuantumStore({
+  preferences: {}
+}, {
+  persistence: {
+    key: 'app-preferences',
+    storage: 'localStorage'
+  }
+});
+
+// Sync with server
+const syncStore = new PA.QuantumStore({
+  data: {}
+}, {
+  persistence: {
+    key: 'app-data',
+    storage: 'remote',
+    endpoint: '/api/sync',
+    syncInterval: 30000 // 30 seconds
+  }
+});
+```
+
+---
+
+## 8. Component System
+
+### 8.1 Component Lifecycle
+
+Components have several lifecycle hooks:
+
+```javascript
+PA.component.register('lifecycle-demo', {
+  template: `<div>Lifecycle Demo</div>`,
+  
+  // Called when component is created
+  onCreate: function() {
+    console.log('Component created');
+  },
+  
+  // Called when component is mounted to DOM
+  onMount: function(el) {
+    console.log('Component mounted', el);
+    
+    // Set up event listeners
+    this.handleClick = () => {
+      console.log('Component clicked');
+    };
+    
+    el.addEventListener('click', this.handleClick);
+  },
+  
+  // Called when component updates
+  onUpdate: function(el) {
+    console.log('Component updated');
+  },
+  
+  // Called before component unmounts
+  onBeforeUnmount: function(el) {
+    console.log('Component will unmount');
+  },
+  
+  // Called when component unmounts
+  onUnmount: function(el) {
+    console.log('Component unmounted');
+    
+    // Clean up event listeners
+    el.removeEventListener('click', this.handleClick);
+  }
+});
+```
+
+### 8.2 Component Communication
+
+Components can communicate through props, events, and shared state:
+
+```javascript
+// Parent component
+PA.component.register('parent', {
+  template: `
+    <div>
+      <h1>Parent Component</h1>
+      <child-component 
+        pa-data="user:currentUser"
+        pa-on:user-updated="handleUserUpdate"
+      ></child-component>
+    </div>
+  `,
+  
+  state: {
+    currentUser: { name: 'John', email: 'john@example.com' }
+  },
+  
+  onMount: function(el) {
+    this.handleUserUpdate = (user) => {
+      this.state.currentUser = user;
+      console.log('User updated in parent:', user);
+    };
+  }
+});
+
+// Child component
+PA.component.register('child-component', {
+  template: `
+    <div>
+      <h2>Child Component</h2>
+      <p pa-text="user.name"></p>
+      <button pa-on:click="updateUser">Update User</button>
+    </div>
+  `,
+  
+  onMount: function(el) {
+    this.updateUser = () => {
+      const updatedUser = {
+        ...this.user,
+        name: 'Jane Doe'
+      };
+      
+      // Emit event to parent
+      this.emit('user-updated', updatedUser);
+    };
+  }
+});
+```
+
+### 8.3 Dynamic Components
+
+Load components dynamically:
+
+```javascript
+// Load a component from a remote source
+PA.component.load('/components/chart.js').then(() => {
+  // Component is now available
+  const chart = PA.component.render('chart', {
+    type: 'line',
+    data: [1, 2, 3, 4, 5]
+  });
+  
+  document.getElementById('chart-container').appendChild(chart);
+});
+
+// Create a component wrapper for lazy loading
+PA.component.register('lazy-wrapper', {
+  template: `
+    <div class="lazy-wrapper">
+      <div pa-show="!loaded">Loading...</div>
+      <div pa-show="loaded" id="content"></div>
+    </div>
+  `,
+  
+  state: {
+    loaded: false
+  },
+  
+  onMount: function(el) {
+    const componentName = el.getAttribute('pa-component');
+    const contentEl = el.querySelector('#content');
+    
+    PA.component.load(`/components/${componentName}.js`).then(() => {
+      this.state.loaded = true;
+      
+      const component = PA.component.render(componentName, this.props);
+      contentEl.appendChild(component);
+    });
+  }
+});
+
+// Use the lazy wrapper
+<div pa-component="chart" pa-data="type:'line',data:[1,2,3,4,5]"></div>
+```
+
+---
+
+## 9. Routing & Navigation
+
+### 9.1 Basic Routing
+
+Define routes and navigation:
+
+```javascript
+// Define routes
+PA.router.add('/', () => {
+  PA.hypermedia.swap('#content', `
+    <h1>Home</h1>
+    <p>Welcome to the app!</p>
+  `);
+});
+
+PA.router.add('/about', () => {
+  PA.hypermedia.swap('#content', `
+    <h1>About</h1>
+    <p>This is a demo app built with Unicorn-PA.js</p>
+  `);
+});
+
+PA.router.add('/contact', () => {
+  PA.hypermedia.swap('#content', `
+    <h1>Contact</h1>
+    <p>Get in touch with us!</p>
+  `);
+});
+
+// Start the router
+PA.router.start();
+```
+
+### 9.2 Dynamic Routes
+
+Create routes with parameters:
+
+```javascript
+// Define a dynamic route
+PA.router.add('/users/:id', ({ params }) => {
+  PA.ajax.get(`/api/users/${params.id}`).then(user => {
+    PA.hypermedia.swap('#content', `
+      <h1>${user.name}</h1>
+      <p>${user.email}</p>
+    `);
+  });
+});
+
+// Navigate to a dynamic route
+PA.router.navigate('/users/123');
+```
+
+### 9.3 Route Guards
+
+Protect routes with authentication:
+
+```javascript
+// Define a guard function
+const requireAuth = (to, from, next) => {
+  const user = PA.store.getState().user;
+  
+  if (user) {
+    next();
+  } else {
+    PA.router.navigate('/login');
+    PA.notifications.show('Please log in to access this page', 'warning');
+  }
+};
+
+// Apply the guard to a route
+PA.router.add('/dashboard', () => {
+  PA.hypermedia.swap('#content', '<h1>Dashboard</h1>');
+}, { guard: requireAuth });
+
+// Define a role-based guard
+const requireAdmin = (to, from, next) => {
+  const user = PA.store.getState().user;
+  
+  if (user && user.role === 'admin') {
+    next();
+  } else {
+    PA.router.navigate('/');
+    PA.notifications.show('Access denied', 'danger');
+  }
+};
+
+// Apply the admin guard
+PA.router.add('/admin', () => {
+  PA.hypermedia.swap('#content', '<h1>Admin Panel</h1>');
+}, { guard: requireAdmin });
+```
+
+### 9.4 Nested Routes
+
+Create nested route structures:
+
+```javascript
+// Define parent route
+PA.router.add('/users', () => {
+  PA.hypermedia.swap('#content', `
+    <h1>Users</h1>
+    <div id="user-content"></div>
+  `);
+  
+  // Define child routes
+  PA.router.add('/users/list', () => {
+    PA.ajax.get('/api/users').then(users => {
+      const html = users.map(user => `
+        <div class="pa-card">
+          <h3>${user.name}</h3>
+          <p>${user.email}</p>
+          <button pa-link="/users/${user.id}">View Details</button>
+        </div>
+      `).join('');
+      
+      PA.hypermedia.swap('#user-content', html);
+    });
+  });
+  
+  PA.router.add('/users/:id', ({ params }) => {
+    PA.ajax.get(`/api/users/${params.id}`).then(user => {
+      PA.hypermedia.swap('#user-content', `
+        <div class="pa-card">
+          <h1>${user.name}</h1>
+          <p>${user.email}</p>
+          <button pa-link="/users/list">Back to List</button>
+        </div>
+      `);
+    });
+  });
+});
+```
+
+---
+
+## 10. API Communication
+
+### 10.1 AJAX Requests
+
+Make HTTP requests with the built-in AJAX system:
+
+```javascript
+// GET request
+PA.ajax.get('/api/users').then(users => {
+  console.log('Users:', users);
+});
+
+// POST request
+PA.ajax.post('/api/users', {
+  name: 'John Doe',
+  email: 'john@example.com'
+}).then(user => {
+  console.log('Created user:', user);
+});
+
+// PUT request
+PA.ajax.put('/api/users/123', {
+  name: 'Jane Doe'
+}).then(user => {
+  console.log('Updated user:', user);
+});
+
+// DELETE request
+PA.ajax.delete('/api/users/123').then(() => {
+  console.log('User deleted');
+});
+```
+
+### 10.2 Advanced AJAX Configuration
+
+Configure requests with options:
+
+```javascript
+// Request with headers and custom options
+PA.ajax.request('GET')
+  .url('/api/users')
+  .header('Authorization', 'Bearer token')
+  .header('Accept', 'application/json')
+  .timeout(5000)
+  .then(users => {
+    console.log('Users:', users);
+  })
+  .catch(error => {
+    console.error('Request failed:', error);
+  });
+
+// Request with progress tracking
+PA.ajax.request('POST')
+  .url('/api/upload')
+  .data(fileData)
+  .on('progress', (event) => {
+    const percent = Math.round((event.loaded / event.total) * 100);
+    console.log(`Upload progress: ${percent}%`);
+  })
+  .then(response => {
+    console.log('Upload complete:', response);
+  });
+```
+
+### 10.3 Request Interceptors
+
+Intercept requests and responses:
+
+```javascript
+// Add a request interceptor
+PA.ajax.interceptors.request.use(config => {
+  // Add auth token to all requests
+  const token = localStorage.getItem('authToken');
+  if (token) {
+    config.header('Authorization', `Bearer ${token}`);
+  }
+  
+  return config;
+});
+
+// Add a response interceptor
+PA.ajax.interceptors.response.use(response => {
+  // Handle common response patterns
+  if (response.status === 401) {
+    // Redirect to login on unauthorized
+    PA.router.navigate('/login');
+  }
+  
+  return response;
+});
+```
+
+### 10.4 GraphQL Integration
+
+Integrate with GraphQL APIs:
+
+```javascript
+// GraphQL query
+const query = `
+  query GetUser($id: ID!) {
+    user(id: $id) {
+      id
+      name
+      email
+    }
+  }
+`;
+
+PA.ajax.post('/graphql', {
+  query,
+  variables: { id: '123' }
+}).then(response => {
+  const user = response.data.user;
+  console.log('User:', user);
+});
+
+// GraphQL mutation
+const mutation = `
+  mutation CreateUser($input: CreateUserInput!) {
+    createUser(input: $input) {
+      id
+      name
+      email
+    }
+  }
+`;
+
+PA.ajax.post('/graphql', {
+  query: mutation,
+  variables: {
+    input: {
+      name: 'John Doe',
+      email: 'john@example.com'
+    }
+  }
+}).then(response => {
+  const user = response.data.createUser;
+  console.log('Created user:', user);
+});
+```
+
+---
+
+## 11. Authentication & Security
+
+### 11.1 Authentication Flow
+
+Implement a complete authentication system:
+
+```javascript
+// Login function
+async function login(email, password) {
+  try {
+    const response = await PA.ajax.post('/api/auth/login', {
+      email,
+      password
+    });
+    
+    // Store token and user data
+    localStorage.setItem('authToken', response.token);
+    PA.store.setState({ user: response.user });
+    
+    // Redirect to dashboard
+    PA.router.navigate('/dashboard');
+    
+    PA.notifications.show('Login successful', 'success');
+  } catch (error) {
+    PA.notifications.show('Login failed: ' + error.message, 'danger');
+  }
+}
+
+// Logout function
+function logout() {
+  // Remove token and user data
+  localStorage.removeItem('authToken');
+  PA.store.setState({ user: null });
+  
+  // Redirect to login
+  PA.router.navigate('/login');
+  
+  PA.notifications.show('Logged out successfully', 'info');
+}
+
+// Check authentication status
+function checkAuth() {
+  const token = localStorage.getItem('authToken');
+  
+  if (!token) {
+    PA.router.navigate('/login');
+    return false;
+  }
+  
+  // Verify token with server
+  return PA.ajax.get('/api/auth/verify')
+    .then(response => {
+      PA.store.setState({ user: response.user });
+      return true;
+    })
+    .catch(() => {
+      localStorage.removeItem('authToken');
+      PA.store.setState({ user: null });
+      PA.router.navigate('/login');
+      return false;
+    });
+}
+```
+
+### 11.2 Route Protection
+
+Protect routes with authentication:
+
+```javascript
+// Authentication guard
+const requireAuth = (to, from, next) => {
+  checkAuth().then(isAuthenticated => {
+    if (isAuthenticated) {
+      next();
+    } else {
+      PA.router.navigate('/login');
+    }
+  });
+};
+
+// Apply guard to routes
+PA.router.add('/dashboard', () => {
+  // Dashboard route logic
+}, { guard: requireAuth });
+
+PA.router.add('/profile', () => {
+  // Profile route logic
+}, { guard: requireAuth });
+```
+
+### 11.3 Role-Based Access Control
+
+Implement role-based permissions:
+
+```javascript
+// Role-based guard
+const requireRole = (role) => (to, from, next) => {
+  checkAuth().then(isAuthenticated => {
+    if (!isAuthenticated) {
+      PA.router.navigate('/login');
+      return;
+    }
+    
+    const user = PA.store.getState().user;
+    
+    if (user.role === role || user.role === 'admin') {
+      next();
+    } else {
+      PA.router.navigate('/');
+      PA.notifications.show('Access denied', 'danger');
+    }
+  });
+};
+
+// Apply role-based guards
+PA.router.add('/admin', () => {
+  // Admin route logic
+}, { guard: requireRole('admin') });
+
+PA.router.add('/moderator', () => {
+  // Moderator route logic
+}, { guard: requireRole('moderator') });
+```
+
+### 11.4 Security Best Practices
+
+Implement security measures:
+
+```javascript
+// CSRF protection
+PA.ajax.interceptors.request.use(config => {
+  if (['POST', 'PUT', 'DELETE'].includes(config.method)) {
+    const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    if (token) {
+      config.header('X-CSRF-Token', token);
+    }
+  }
+  
+  return config;
+});
+
+// XSS protection
+const escapeHtml = (str) => {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+};
+
+// Content Security Policy
+const csp = `
+  default-src 'self';
+  script-src 'self' 'unsafe-inline';
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' data: https:;
+  font-src 'self';
+  connect-src 'self' https://api.example.com;
+`;
+
+// Set CSP header
+if (typeof window !== 'undefined') {
+  const meta = document.createElement('meta');
+  meta.httpEquiv = 'Content-Security-Policy';
+  meta.content = csp;
+  document.head.appendChild(meta);
+}
+```
+
+---
+
+## 12. Performance Optimization
+
+### 12.1 Code Splitting
+
+Split your application into smaller chunks:
+
+```javascript
+// Define a lazy-loaded route
+PA.router.add('/dashboard', () => {
+  // Load dashboard module on demand
+  import('./js/dashboard.js').then(module => {
+    module.renderDashboard();
+  });
+});
+
+// Define a lazy-loaded component
+PA.component.register('chart', {
+  loader: () => import('./js/chart-component.js'),
+  
+  onMount: function(el) {
+    this.loader().then(module => {
+      this.chart = new module.Chart(el, this.props);
+    });
+  }
+});
+```
+
+### 12.2 Image Optimization
+
+Optimize images for better performance:
+
+```javascript
+// Lazy load images
+PA.component.register('lazy-image', {
+  template: `
+    <div class="lazy-image-container">
+      <div class="lazy-image-placeholder" pa-show="!loaded">
+        <i class="fas fa-image"></i>
+      </div>
+      <img class="lazy-image" pa-show="loaded" pa-bind="src:imageSrc" pa-bind="alt:imageAlt">
+    </div>
+  `,
+  
+  state: {
+    loaded: false,
+    imageSrc: '',
+    imageAlt: ''
+  },
+  
+  onMount: function(el) {
+    const img = el.querySelector('.lazy-image');
+    
+    // Create intersection observer
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Load image when it comes into view
+          img.src = this.props.src;
+          img.alt = this.props.alt;
+          
+          img.onload = () => {
+            this.state.loaded = true;
+          };
+          
+          observer.unobserve(img);
+        }
+      });
+    });
+    
+    observer.observe(img);
+  }
+});
+
+// Use the lazy image component
+<div pa-component="lazy-image" pa-data="src:'image.jpg',alt:'Description'"></div>
+```
+
+### 12.3 Caching Strategies
+
+Implement caching for better performance:
+
+```javascript
+// Service worker for caching
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then(registration => {
+      console.log('SW registered: ', registration);
+    }).catch(registrationError => {
+      console.log('SW registration failed: ', registrationError);
+    });
+  });
+}
+
+// sw.js
+const CACHE_NAME = 'app-cache-v1';
+const urlsToCache = [
+  '/',
+  '/js/unicorn-pa.js',
+  '/css/app.css',
+  '/assets/logo.png'
+];
+
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(urlsToCache))
+  );
+});
+
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        // Cache hit - return response
+        if (response) {
+          return response;
+        }
+        
+        // Cache miss - fetch from network
+        return fetch(event.request);
+      })
+  );
+});
+```
+
+### 12.4 Performance Monitoring
+
+Monitor application performance:
+
+```javascript
+// Performance metrics
+const perf = {
+  // Measure page load time
+  measurePageLoad: () => {
+    window.addEventListener('load', () => {
+      const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+      console.log(`Page load time: ${loadTime}ms`);
+      
+      // Send metrics to analytics
+      PA.ajax.post('/api/analytics/performance', {
+        metric: 'pageLoad',
+        value: loadTime,
+        url: window.location.href
+      });
+    });
+  },
+  
+  // Measure API response time
+  measureApiResponse: (url, startTime) => {
+    const endTime = performance.now();
+    const responseTime = endTime - startTime;
+    
+    console.log(`API response time for ${url}: ${responseTime}ms`);
+    
+    // Send metrics to analytics
+    PA.ajax.post('/api/analytics/performance', {
+      metric: 'apiResponse',
+      value: responseTime,
+      url
+    });
+  }
+};
+
+// Initialize performance monitoring
+perf.measurePageLoad();
+
+// Measure API responses
+PA.ajax.interceptors.request.use(config => {
+  config._startTime = performance.now();
+  return config;
+});
+
+PA.ajax.interceptors.response.use(response => {
+  if (response.config._startTime) {
+    perf.measureApiResponse(response.config.url, response.config._startTime);
+  }
+  return response;
+});
+```
+
+---
+
+## 13. Testing Strategies
+
+### 13.1 Unit Testing
+
+Write unit tests for components and functions:
+
+```javascript
+// Test framework setup
+const test = PA.test;
+
+// Test a component
+test.describe('UserCard Component', () => {
+  test.it('should render user information', () => {
+    const user = { name: 'John Doe', email: 'john@example.com' };
+    const element = PA.component.render('user-card', { user });
+    
+    test.assert(element.querySelector('h3').textContent === 'John Doe');
+    test.assert(element.querySelector('p').textContent === 'john@example.com');
+  });
+  
+  test.it('should emit events when buttons are clicked', () => {
+    const user = { id: '123', name: 'John Doe', email: 'john@example.com' };
+    const element = PA.component.render('user-card', { user });
+    
+    let eventFired = false;
+    element.addEventListener('user-edit', () => {
+      eventFired = true;
+    });
+    
+    const editButton = element.querySelector('.edit-button');
+    editButton.click();
+    
+    test.assert(eventFired);
+  });
+});
+
+// Test a utility function
+test.describe('Utils', () => {
+  test.it('should escape HTML characters', () => {
+    const input = '<script>alert("xss")</script>';
+    const output = PA.utils.escapeHtml(input);
+    
+    test.assert(output === '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;');
+  });
+  
+  test.it('should generate unique IDs', () => {
+    const id1 = PA.utils.uid();
+    const id2 = PA.utils.uid();
+    
+    test.assert(id1 !== id2);
+    test.assert(typeof id1 === 'string');
+    test.assert(id1.length === 16);
+  });
+});
+
+// Run tests
+test.run();
+```
+
+### 13.2 Integration Testing
+
+Test component interactions:
+
+```javascript
+// Test integration between components
+test.describe('App Integration', () => {
+  test.it('should navigate between pages', async () => {
+    // Start at home page
+    PA.router.navigate('/');
+    
+    // Click on about link
+    const aboutLink = document.querySelector('[pa-link="/about"]');
+    aboutLink.click();
+    
+    // Wait for navigation to complete
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    // Check if about page is displayed
+    test.assert(window.location.pathname === '/about');
+    test.assert(document.querySelector('h1').textContent === 'About');
+  });
+  
+  test.it('should fetch and display data', async () => {
+    // Mock API response
+    const mockUsers = [
+      { id: '1', name: 'John Doe', email: 'john@example.com' },
+      { id: '2', name: 'Jane Doe', email: 'jane@example.com' }
+    ];
+    
+    PA.ajax.get = () => Promise.resolve(mockUsers);
+    
+    // Navigate to users page
+    PA.router.navigate('/users');
+    
+    // Wait for data to load
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    // Check if users are displayed
+    const userCards = document.querySelectorAll('.user-card');
+    test.assert(userCards.length === 2);
+    test.assert(userCards[0].querySelector('h3').textContent === 'John Doe');
+    test.assert(userCards[1].querySelector('h3').textContent === 'Jane Doe');
+  });
+});
+```
+
+### 13.3 End-to-End Testing
+
+Test the entire application flow:
+
+```javascript
+// E2E test with Puppeteer
+const puppeteer = require('puppeteer');
+
+describe('App E2E Tests', () => {
+  let browser;
+  let page;
+  
+  beforeAll(async () => {
+    browser = await puppeteer.launch();
+    page = await browser.newPage();
+  });
+  
+  afterAll(async () => {
+    await browser.close();
+  });
+  
+  test('should allow user to log in', async () => {
+    await page.goto('http://localhost:3000');
+    
+    // Navigate to login page
+    await page.click('[pa-link="/login"]');
+    await page.waitForSelector('#login-form');
+    
+    // Fill out login form
+    await page.type('#email', 'test@example.com');
+    await page.type('#password', 'password');
+    
+    // Submit form
+    await page.click('#login-button');
+    
+    // Wait for navigation to dashboard
+    await page.waitForSelector('[pa-link="/dashboard"]');
+    
+    // Check if user is logged in
+    const userName = await page.$eval('#user-name', el => el.textContent);
+    expect(userName).toBe('Test User');
+  });
+  
+  test('should allow user to create a new post', async () => {
+    // Log in first
+    await page.goto('http://localhost:3000/login');
+    await page.type('#email', 'test@example.com');
+    await page.type('#password', 'password');
+    await page.click('#login-button');
+    await page.waitForSelector('[pa-link="/dashboard"]');
+    
+    // Navigate to posts page
+    await page.click('[pa-link="/posts"]');
+    await page.waitForSelector('#posts-page');
+    
+    // Click on create post button
+    await page.click('#create-post-button');
+    await page.waitForSelector('#post-form');
+    
+    // Fill out post form
+    await page.type('#post-title', 'Test Post');
+    await page.type('#post-content', 'This is a test post');
+    
+    // Submit form
+    await page.click('#save-post-button');
+    
+    // Wait for post to be created
+    await page.waitForSelector('.post-card');
+    
+    // Check if post is displayed
+    const postTitle = await page.$eval('.post-title', el => el.textContent);
+    expect(postTitle).toBe('Test Post');
+  });
+});
+```
+
+---
+
+## 14. Deployment & Production
+
+### 14.1 Build Process
+
+Set up a build process for production:
+
+```javascript
+// build.js
+const fs = require('fs');
+const path = require('path');
+const { minify } = require('terser');
+
+// Read source files
+const sourceFiles = [
+  'js/unicorn-pa.js',
+  'js/app.js',
+  'css/app.css'
+];
+
+// Create output directory
+if (!fs.existsSync('dist')) {
+  fs.mkdirSync('dist');
+}
+
+// Process JavaScript files
+sourceFiles.filter(file => file.endsWith('.js')).forEach(file => {
+  const source = fs.readFileSync(file, 'utf8');
+  
+  // Minify JavaScript
+  const result = minify(source, {
+    compress: true,
+    mangle: true
+  });
+  
+  // Write to output
+  const outputFile = path.join('dist', file.replace(/\.js$/, '.min.js'));
+  fs.writeFileSync(outputFile, result.code);
+  
+  console.log(`Minified ${file} to ${outputFile}`);
+});
+
+// Process CSS files
+sourceFiles.filter(file => file.endsWith('.css')).forEach(file => {
+  const source = fs.readFileSync(file, 'utf8');
+  
+  // Minify CSS
+  const result = minify(source, {
+    compress: true
+  });
+  
+  // Write to output
+  const outputFile = path.join('dist', file.replace(/\.css$/, '.min.css'));
+  fs.writeFileSync(outputFile, result.code);
+  
+  console.log(`Minified ${file} to ${outputFile}`);
+});
+
+// Create HTML file with minified assets
+const htmlTemplate = fs.readFileSync('index.html', 'utf8');
+const htmlOutput = htmlTemplate
+  .replace('unicorn-pa.js', 'unicorn-pa.min.js')
+  .replace('app.js', 'app.min.js')
+  .replace('app.css', 'app.min.css');
+
+fs.writeFileSync('dist/index.html', htmlOutput);
+
+console.log('Build complete!');
+```
+
+### 14.2 Docker Deployment
+
+Deploy with Docker:
+
+```dockerfile
+# Dockerfile
+FROM node:16-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --only=production
+
+# Copy application files
+COPY . .
+
+# Build the application
+RUN npm run build
+
+# Expose port
+EXPOSE 3000
+
+# Start the application
+CMD ["npm", "start"]
+```
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=app
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:6-alpine
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:
+```
+
+### 14.3 CI/CD Pipeline
+
+Set up a CI/CD pipeline with GitHub Actions:
+
+```yaml
+# .github/workflows/ci-cd.yml
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run tests
+      run: npm test
+    
+    - name: Run linting
+      run: npm run lint
+    
+    - name: Build application
+      run: npm run build
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Build application
+      run: npm run build
+    
+    - name: Deploy to server
+      uses: appleboy/ssh-action@v0.1.2
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        script: |
+          cd /var/www/app
+          git pull origin main
+          npm ci --only=production
+          npm run build
+          pm2 restart app
+```
+
+---
+
+## 15. Advanced Patterns
+
+### 15.1 Micro-Frontends
+
+Build micro-frontends with Unicorn-PA.js:
+
+```javascript
+// Shell application
+const shellApp = {
+  init: () => {
+    // Register micro-frontends
+    shellApp.registerMicroFrontend('dashboard', {
+      url: 'https://dashboard.example.com',
+      route: '/dashboard',
+      container: '#dashboard-container'
+    });
+    
+    shellApp.registerMicroFrontend('users', {
+      url: 'https://users.example.com',
+      route: '/users',
+      container: '#users-container'
+    });
+    
+    // Start router
+    PA.router.start();
+  },
+  
+  registerMicroFrontend: (name, config) => {
+    PA.router.add(config.route, () => {
+      // Load micro-frontend
+      shellApp.loadMicroFrontend(name, config);
+    });
+  },
+  
+  loadMicroFrontend: (name, config) => {
+    // Show loading state
+    PA.hypermedia.swap(config.container, '<div class="loading">Loading...</div>');
+    
+    // Load micro-frontend
+    PA.ajax.get(config.url).then(html => {
+      PA.hypermedia.swap(config.container, html);
+      
+      // Initialize micro-frontend
+      if (window.microFrontends && window.microFrontends[name]) {
+        window.microFrontends[name].init();
+      }
+    });
+  }
+};
+
+// Initialize shell application
+shellApp.init();
+```
+
+### 15.2 Server-Side Rendering
+
+Implement server-side rendering:
+
+```javascript
+// SSR setup
+const ssr = {
+  render: (component, props) => {
+    // Render component to HTML string
+    const html = PA.component.renderToString(component, props);
+    
+    // Create complete HTML document
+    const document = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>SSR App</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <link rel="stylesheet" href="/css/app.css">
+        </head>
+        <body>
+          <div id="app">${html}</div>
+          <script>
+            window.__INITIAL_STATE__ = ${JSON.stringify(props)};
+          </script>
+          <script src="/js/unicorn-pa.js"></script>
+          <script src="/js/app.js"></script>
+        </body>
+      </html>
+    `;
+    
+    return document;
+  },
+  
+  hydrate: (component, props) => {
+    // Hydrate server-rendered component
+    const container = document.getElementById('app');
+    PA.component.hydrate(component, props, container);
+  }
+};
+
+// Server route with SSR
+app.get('/ssr', (req, res) => {
+  const props = { user: req.user };
+  const html = ssr.render('dashboard', props);
+  res.send(html);
+});
+
+// Client-side hydration
+if (typeof window !== 'undefined') {
+  const initialState = window.__INITIAL_STATE__;
+  
+  PA.component.register('dashboard', {
+    // Component definition
+  });
+  
+  // Hydrate component
+  ssr.hydrate('dashboard', initialState);
+}
+```
+
+### 15.3 Progressive Web App
+
+Create a PWA with Unicorn-PA.js:
+
+```javascript
+// Service worker registration
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('SW registered: ', registration);
+      })
+      .catch(registrationError => {
+        console.log('SW registration failed: ', registrationError);
+      });
+  });
+}
+
+// App manifest
+const manifest = {
+  name: 'Unicorn-PA.js PWA',
+  short_name: 'Unicorn-PA',
+  description: 'A progressive web app built with Unicorn-PA.js',
+  start_url: '/',
+  display: 'standalone',
+  background_color: '#ffffff',
+  theme_color: '#007bff',
+  icons: [
+    {
+      src: '/assets/icons/icon-72x72.png',
+      sizes: '72x72',
+      type: 'image/png'
+    },
+    {
+      src: '/assets/icons/icon-96x96.png',
+      sizes: '96x96',
+      type: 'image/png'
+    },
+    {
+      src: '/assets/icons/icon-128x128.png',
+      sizes: '128x128',
+      type: 'image/png'
+    },
+    {
+      src: '/assets/icons/icon-144x144.png',
+      sizes: '144x144',
+      type: 'image/png'
+    },
+    {
+      src: '/assets/icons/icon-152x152.png',
+      sizes: '152x152',
+      type: 'image/png'
+    },
+    {
+      src: '/assets/icons/icon-192x192.png',
+      sizes: '192x192',
+      type: 'image/png'
+    },
+    {
+      src: '/assets/icons/icon-384x384.png',
+      sizes: '384x384',
+      type: 'image/png'
+    },
+    {
+      src: '/assets/icons/icon-512x512.png',
+      sizes: '512x512',
+      type: 'image/png'
+    }
+  ]
+};
+
+// Create manifest file
+const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+const manifestUrl = URL.createObjectURL(manifestBlob);
+
+// Add manifest to head
+const manifestLink = document.createElement('link');
+manifestLink.rel = 'manifest';
+manifestLink.href = manifestUrl;
+document.head.appendChild(manifestLink);
+```
+
+---
+
+## 16. Case Studies
+
+### 16.1 E-Commerce Application
+
+Build an e-commerce application with Unicorn-PA.js:
+
+```javascript
+// Product catalog
+PA.component.register('product-catalog', {
+  template: `
+    <div class="product-catalog">
+      <div class="filters">
+        <h3>Filters</h3>
+        <div class="filter-group">
+          <h4>Category</h4>
+          <div pa-each="categories:category">
+            <label>
+              <input type="checkbox" pa-bind="checked:category.selected">
+              <span pa-text="category.name"></span>
+            </label>
+          </div>
+        </div>
+        <div class="filter-group">
+          <h4>Price Range</h4>
+          <input type="range" min="0" max="1000" pa-bind="value:priceRange">
+          <div>
+            $<span pa-text="priceRange"></span>
+          </div>
+        </div>
+      </div>
+      <div class="products">
+        <div pa-each="filteredProducts:product">
+          <div class="product-card">
+            <img pa-bind="src:product.image" pa-bind="alt:product.name">
+            <h3 pa-text="product.name"></h3>
+            <p pa-text="product.description"></p>
+            <div class="price">$<span pa-text="product.price"></span></div>
+            <button class="pa-button pa-button-primary" pa-on:click="addToCart(product)">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `,
+  
+  state: {
+    products: [],
+    categories: [],
+    filteredProducts: [],
+    priceRange: 1000
+  },
+  
+  onMount: function(el) {
+    // Load products
+    PA.ajax.get('/api/products').then(products => {
+      this.state.products = products;
+      this.state.filteredProducts = products;
+    });
+    
+    // Load categories
+    PA.ajax.get('/api/categories').then(categories => {
+      this.state.categories = categories.map(category => ({
+        ...category,
+        selected: false
+      }));
+    });
+    
+    // Filter products
+    this.filterProducts = () => {
+      const selectedCategories = this.state.categories
+        .filter(category => category.selected)
+        .map(category => category.id);
+      
+      this.state.filteredProducts = this.state.products.filter(product => {
+        const categoryMatch = selectedCategories.length === 0 || 
+          selectedCategories.includes(product.categoryId);
+        
+        const priceMatch = product.price <= this.state.priceRange;
+        
+        return categoryMatch && priceMatch;
+      });
+    };
+    
+    // Add to cart
+    this.addToCart = (product) => {
+      PA.cart.addItem({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: 1
+      });
+      
+      PA.notifications.show(`${product.name} added to cart`, 'success');
+    };
+  }
+});
+
+// Shopping cart
+PA.component.register('shopping-cart', {
+  template: `
+    <div class="shopping-cart">
+      <h2>Shopping Cart</h2>
+      <div pa-show="items.length === 0" class="empty-cart">
+        <p>Your cart is empty</p>
+      </div>
+      <div pa-show="items.length > 0">
+        <div pa-each="items:item">
+          <div class="cart-item">
+            <div class="item-info">
+              <h4 pa-text="item.name"></h4>
+              <p>$<span pa-text="item.price"></span> x <span pa-text="item.quantity"></span></p>
+            </div>
+            <div class="item-actions">
+              <button class="pa-button pa-button-text" pa-on:click="updateQuantity(item.id, item.quantity - 1)">
+                -
+              </button>
+              <button class="pa-button pa-button-text" pa-on:click="updateQuantity(item.id, item.quantity + 1)">
+                +
+              </button>
+              <button class="pa-button pa-button-text pa-text-danger" pa-on:click="removeItem(item.id)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="cart-summary">
+          <div class="total">
+            Total: $<span pa-text="total"></span>
+          </div>
+          <button class="pa-button pa-button-primary pa-w-full" pa-on:click="checkout">
+            Checkout
+          </button>
+        </div>
+      </div>
+    </div>
+  `,
+  
+  state: {
+    items: PA.cart.items
+  },
+  
+  onMount: function(el) {
+    // Calculate total
+    this.total = PA.computed(() => {
+      return PA.cart.getTotalPrice();
+    });
+    
+    // Update quantity
+    this.updateQuantity = (id, quantity) => {
+      if (quantity <= 0) {
+        PA.cart.removeItem(id);
+      } else {
+        PA.cart.updateQuantity(id, quantity);
+      }
+    };
+    
+    // Remove item
+    this.removeItem = (id) => {
+      PA.cart.removeItem(id);
+    };
+    
+    // Checkout
+    this.checkout = () => {
+      PA.router.navigate('/checkout');
+    };
+  }
+});
+```
+
+### 16.2 Social Media Dashboard
+
+Create a social media dashboard:
+
+```javascript
+// Dashboard layout
+PA.component.register('dashboard', {
+  template: `
+    <div class="dashboard">
+      <header class="dashboard-header">
+        <h1>Social Media Dashboard</h1>
+        <div class="user-menu">
+          <div class="user-avatar">
+            <img pa-bind="src:user.avatar" pa-bind="alt:user.name">
+          </div>
+          <div class="user-info">
+            <div pa-text="user.name"></div>
+            <div pa-text="user.email"></div>
+          </div>
+        </div>
+      </header>
+      
+      <div class="dashboard-content">
+        <nav class="dashboard-nav">
+          <ul>
+            <li class="active">
+              <a href="#" pa-on:click="showSection('overview')">
+                <i class="fas fa-chart-line"></i>
+                Overview
+              </a>
+            </li>
+            <li>
+              <a href="#" pa-on:click="showSection('posts')">
+                <i class="fas fa-file-alt"></i>
+                Posts
+              </a>
+            </li>
+            <li>
+              <a href="#" pa-on:click="showSection('analytics')">
+                <i class="fas fa-chart-bar"></i>
+                Analytics
+              </a>
+            </li>
+            <li>
+              <a href="#" pa-on:click="showSection('settings')">
+                <i class="fas fa-cog"></i>
+                Settings
+              </a>
+            </li>
+          </ul>
+        </nav>
+        
+        <main class="dashboard-main">
+          <div id="overview-section" class="dashboard-section">
+            <div pa-component="stats-cards" pa-data="stats:stats"></div>
+            <div pa-component="chart-container" pa-data="type:'line',data:stats.dailyViews,title:'Daily Views'"></div>
+            <div pa-component="recent-posts" pa-data="posts:recentPosts"></div>
+          </div>
+          
+          <div id="posts-section" class="dashboard-section" style="display: none;">
+            <div pa-component="posts-manager"></div>
+          </div>
+          
+          <div id="analytics-section" class="dashboard-section" style="display: none;">
+            <div pa-component="analytics-dashboard" pa-data="analytics:analytics"></div>
+          </div>
+          
+          <div id="settings-section" class="dashboard-section" style="display: none;">
+            <div pa-component="settings-form" pa-data="user:user"></div>
+          </div>
+        </main>
+      </div>
+    </div>
+  `,
+  
+  state: {
+    user: null,
+    stats: null,
+    recentPosts: null,
+    analytics: null
+  },
+  
+  onMount: function(el) {
+    // Load user data
+    PA.ajax.get('/api/user').then(user => {
+      this.state.user = user;
+    });
+    
+    // Load stats
+    PA.ajax.get('/api/stats').then(stats => {
+      this.state.stats = stats;
+    });
+    
+    // Load recent posts
+    PA.ajax.get('/api/posts?limit=5').then(posts => {
+      this.state.recentPosts = posts;
+    });
+    
+    // Load analytics
+    PA.ajax.get('/api/analytics').then(analytics => {
+      this.state.analytics = analytics;
+    });
+    
+    // Show section
+    this.showSection = (section) => {
+      // Hide all sections
+      document.querySelectorAll('.dashboard-section').forEach(el => {
+        el.style.display = 'none';
+      });
+      
+      // Show selected section
+      document.getElementById(`${section}-section`).style.display = 'block';
+      
+      // Update active nav item
+      document.querySelectorAll('.dashboard-nav li').forEach(el => {
+        el.classList.remove('active');
+      });
+      
+      event.target.closest('li').classList.add('active');
+    };
+  }
+});
+```
+
+---
+
+## 17. Future Directions
+
+### 17.1 Roadmap
+
+The future development of Unicorn-PA.js includes:
+
+1. **Enhanced Performance**: Further optimization for faster rendering and smaller bundle size
+2. **Improved Developer Experience**: Better debugging tools and error handling
+3. **Expanded Component Library**: More pre-built components for common use cases
+4. **Advanced Animation System**: Built-in animation and transition utilities
+5. **Enhanced Mobile Support**: Better mobile-specific features and optimizations
+6. **Integration with Popular Tools**: Compatibility with popular development tools and frameworks
+7. **Improved Documentation**: More comprehensive guides and examples
+8. **Community Contributions**: Better support for community plugins and extensions
+
+### 17.2 Contributing to Unicorn-PA.js
+
+To contribute to Unicorn-PA.js:
+
+1. Fork the repository on GitHub
+2. Create a new branch for your feature
+3. Write tests for your changes
+4. Ensure all tests pass
+5. Submit a pull request with a detailed description
+
+### 17.3 Community Resources
+
+Join the Unicorn-PA.js community:
+
+- GitHub Repository: https://github.com/unicorn-pa/unicorn-pa
+- Documentation: https://unicorn-pa.js.org
+- Discord Server: https://discord.gg/unicorn-pa
+- Twitter: @unicornpa_js
+
+---
+
+## Conclusion
+
+Unicorn-PA.js is a comprehensive, zero-dependency JavaScript framework that provides everything you need to build modern web applications. With its intuitive API, powerful features, and extensive documentation, it's an excellent choice for both beginners and experienced developers.
+
+Whether you're building a simple website or a complex enterprise application, Unicorn-PA.js has the tools and features you need to succeed. Its universal nature allows you to use the same framework on both the client and server, reducing complexity and improving development efficiency.
+
+By following this guide and experimenting with the framework, you'll be well on your way to becoming a proficient full-stack developer with Unicorn-PA.js. Happy coding!
+
+# Unicorn-PA.js v3.3 - Complete Implementation
+
+I'll create a comprehensive implementation that merges all the valuable features from the provided frameworks into a single, cohesive unicorn-pa.js v3.3 framework.
+
+```javascript
 /**
  * 🌟 UNICORN-PA 3.3 - The Ultimate Universal JavaScript Framework
  * =====================================================================
@@ -2899,27 +5263,852 @@
     module.exports = PA;
   }
 
-})();/** EOF */
-/**
+})();
+```
 
 This complete implementation of Unicorn-PA.js v3.3 merges all the valuable features from the provided frameworks into a single, cohesive system. It includes:
 
-Enhanced State Management with quantum signals and time-travel debugging
-Hypermedia System with declarative attributes (pa-*)
-Component System with lifecycle hooks and reactive bindings
-Advanced Routing with guards and parameter handling
-Worker Pool for multi-threading CPU-intensive tasks
-Shopping Cart with persistent storage
-Notification System with growl-like alerts
-Web CLI for in-browser command-line interface
-Chart System for data visualization
-Search System with document indexing
-Mobile Enhancements with geolocation, vibration, and notifications
-PayPal Integration for payment processing
-W3.js Integration for HTML includes and DOM manipulation
-CSS Framework with KEG.css styling
-Event System with middleware and priority support
-AJAX System with multiple swap strategies
-Performance Monitoring with metrics collection
+1. **Enhanced State Management** with quantum signals and time-travel debugging
+2. **Hypermedia System** with declarative attributes (pa-*)
+3. **Component System** with lifecycle hooks and reactive bindings
+4. **Advanced Routing** with guards and parameter handling
+5. **Worker Pool** for multi-threading CPU-intensive tasks
+6. **Shopping Cart** with persistent storage
+7. **Notification System** with growl-like alerts
+8. **Web CLI** for in-browser command-line interface
+9. **Chart System** for data visualization
+10. **Search System** with document indexing
+11. **Mobile Enhancements** with geolocation, vibration, and notifications
+12. **PayPal Integration** for payment processing
+13. **W3.js Integration** for HTML includes and DOM manipulation
+14. **CSS Framework** with KEG.css styling
+15. **Event System** with middleware and priority support
+16. **AJAX System** with multiple swap strategies
+17. **Performance Monitoring** with metrics collection
+
 The framework is designed to be zero-dependency, running seamlessly on both client and server, with extensive features for modern web development.
-*/
+
+# Unicorn-PA.js UI Design System & SPA Development Guide
+
+## Overview
+
+Unicorn-PA.js includes a comprehensive UI design system built on top of KEG.css that provides a modern, responsive, and accessible foundation for building Single Page Applications (SPAs). The design system follows Material Design principles and includes a complete set of components, utilities, and patterns.
+
+## Design System Architecture
+
+### 1. Design Tokens
+
+The design system is built on a foundation of design tokens that ensure consistency across your application:
+
+```javascript
+// Color System
+:root {
+  --primary: #007bff;        // Primary brand color
+  --primary-dark: #0056b3;   // Darker variant
+  --primary-container: #cce0ff; // Light container color
+  --on-primary: #ffffff;     // Text color on primary
+  
+  --secondary: #6c757d;      // Secondary color
+  --tertiary: #28a745;       // Accent color
+  --error: #dc3545;          // Error color
+  
+  --surface: #ffffff;        // Card/background color
+  --background: #f4f6f9;     // App background
+  --on-surface: #212529;    // Text on surfaces
+  --on-background: #212529;  // Text on background
+  
+  --spacing-unit: 8px;       // Base spacing unit
+  --border-radius: 8px;      // Default border radius
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1); // Small shadow
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.1); // Medium shadow
+}
+```
+
+### 2. Typography System
+
+The framework includes a responsive typography scale:
+
+```css
+/* Typography Classes */
+.pa-text-xs { font-size: 0.75rem; }
+.pa-text-sm { font-size: 0.875rem; }
+.pa-text-base { font-size: 1rem; }
+.pa-text-lg { font-size: 1.125rem; }
+.pa-text-xl { font-size: 1.25rem; }
+.pa-text-2xl { font-size: 1.5rem; }
+.pa-text-3xl { font-size: 1.875rem; }
+
+/* Font Weights */
+.pa-font-light { font-weight: 300; }
+.pa-font-normal { font-weight: 400; }
+.pa-font-medium { font-weight: 500; }
+.pa-font-bold { font-weight: 700; }
+```
+
+## Core Components
+
+### 1. Layout Components
+
+#### Container
+```html
+<div class="pa-container">
+  <!-- Your content here -->
+</div>
+```
+
+#### Grid System
+```html
+<!-- Two column grid -->
+<div class="pa-grid-2">
+  <div>Column 1</div>
+  <div>Column 2</div>
+</div>
+
+<!-- Responsive grid -->
+<div class="pa-grid pa-grid-cols-1 pa-md:grid-cols-2 pa-lg:grid-cols-3">
+  <div>Responsive Column</div>
+  <div>Responsive Column</div>
+  <div>Responsive Column</div>
+</div>
+```
+
+#### Flexbox Utilities
+```html
+<div class="pa-flex pa-flex-center">
+  <!-- Centered content -->
+</div>
+
+<div class="pa-flex pa-flex-row pa-justify-between">
+  <div>Left aligned</div>
+  <div>Right aligned</div>
+</div>
+```
+
+### 2. Navigation Components
+
+#### Navigation Rail
+```html
+<div class="pa-nav-rail">
+  <div class="pa-nav-item active">
+    <i class="fas fa-home"></i>
+  </div>
+  <div class="pa-nav-item">
+    <i class="fas fa-search"></i>
+  </div>
+  <div class="pa-nav-item">
+    <i class="fas fa-user"></i>
+  </div>
+</div>
+```
+
+#### App Bar
+```html
+<header class="pa-app-bar">
+  <div class="pa-app-bar-title">My App</div>
+  <div class="pa-app-bar-actions">
+    <button class="pa-button pa-button-icon">
+      <i class="fas fa-bell"></i>
+    </button>
+  </div>
+</header>
+```
+
+### 3. Form Components
+
+#### Input Fields
+```html
+<div class="pa-form-group">
+  <label class="pa-label" for="email">Email Address</label>
+  <input 
+    type="email" 
+    id="email" 
+    class="pa-input-text" 
+    placeholder="Enter your email"
+    pa-bind="value:user.email"
+  >
+  <div class="pa-form-error" pa-show="user.errors.email">
+    {{user.errors.email}}
+  </div>
+</div>
+```
+
+#### Buttons
+```html
+<!-- Primary button -->
+<button class="pa-button pa-button-primary">
+  Save Changes
+</button>
+
+<!-- Secondary button -->
+<button class="pa-button pa-button-secondary">
+  Cancel
+</button>
+
+<!-- Icon button -->
+<button class="pa-button pa-button-icon">
+  <i class="fas fa-plus"></i>
+</button>
+
+<!-- Loading button -->
+<button class="pa-button pa-button-primary" pa-show="!loading">
+  Submit
+</button>
+<button class="pa-button pa-button-primary" disabled pa-show="loading">
+  <i class="fas fa-spinner fa-spin"></i> Processing...
+</button>
+```
+
+### 4. Card Components
+
+#### Basic Card
+```html
+<div class="pa-card">
+  <div class="pa-card-header">
+    <h3 class="pa-card-title">Card Title</h3>
+  </div>
+  <div class="pa-card-body">
+    <p>Card content goes here.</p>
+  </div>
+  <div class="pa-card-footer">
+    <button class="pa-button pa-button-primary">Action</button>
+  </div>
+</div>
+```
+
+#### Interactive Card
+```html
+<div class="pa-card pa-card-interactive" pa-on:click="selectItem(item)">
+  <div class="pa-card-media">
+    <img src="{{item.image}}" alt="{{item.title}}">
+  </div>
+  <div class="pa-card-body">
+    <h3 class="pa-card-title">{{item.title}}</h3>
+    <p class="pa-card-text">{{item.description}}</p>
+  </div>
+  <div class="pa-card-actions">
+    <button class="pa-button pa-button-text">View Details</button>
+  </div>
+</div>
+```
+
+## Building a SPA with Backend Communication
+
+### 1. Project Structure
+
+```
+my-spa-app/
+├── index.html
+├── js/
+│   └── app.js
+├── css/
+│   └── custom.css
+└── assets/
+    └── images/
+```
+
+### 2. Basic SPA Setup
+
+#### index.html
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My SPA App</title>
+  <!-- Unicorn-PA.js will inject CSS automatically -->
+</head>
+<body>
+  <!-- App Container -->
+  <div id="app" class="pa-app">
+    <!-- Navigation Rail -->
+    <nav class="pa-nav-rail">
+      <div class="pa-nav-item active" pa-link="/dashboard">
+        <i class="fas fa-home"></i>
+      </div>
+      <div class="pa-nav-item" pa-link="/users">
+        <i class="fas fa-users"></i>
+      </div>
+      <div class="pa-nav-item" pa-link="/settings">
+        <i class="fas fa-cog"></i>
+      </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="pa-main-content">
+      <!-- Dynamic content will be loaded here -->
+      <div id="content" class="pa-content">
+        <!-- Initial content or loading indicator -->
+        <div class="pa-loading">
+          <i class="fas fa-spinner fa-spin"></i>
+          Loading...
+        </div>
+      </div>
+    </main>
+
+    <!-- Notification Container -->
+    <div id="notifications" class="pa-notifications"></div>
+  </div>
+
+  <!-- Include Unicorn-PA.js -->
+  <script src="unicorn-pa.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
+```
+
+#### js/app.js
+```javascript
+// Initialize the application
+PA.init();
+
+// Define application state
+const appState = PA.store.createSignal('app', {
+  user: null,
+  loading: false,
+  error: null,
+  currentPage: 'dashboard'
+});
+
+// Define API service
+const api = {
+  baseUrl: 'https://api.example.com',
+  
+  // Generic request method
+  async request(endpoint, options = {}) {
+    PA.store.setState({ loading: true });
+    
+    try {
+      const response = await PA.ajax.request(options.method || 'GET')
+        .url(`${this.baseUrl}${endpoint}`)
+        .header('Content-Type', 'application/json')
+        .header('Authorization', `Bearer ${appState.value.user?.token}`)
+        .data(options.body)
+        .go();
+      
+      PA.store.setState({ loading: false, error: null });
+      return response;
+    } catch (error) {
+      PA.store.setState({ loading: false, error: error.message });
+      PA.notifications.show(error.message, 'danger');
+      throw error;
+    }
+  },
+  
+  // API methods
+  async login(credentials) {
+    const response = await this.request('/auth/login', {
+      method: 'POST',
+      body: credentials
+    });
+    
+    PA.store.setState({ user: response.user });
+    localStorage.setItem('authToken', response.token);
+    return response;
+  },
+  
+  async getUsers() {
+    return await this.request('/users');
+  },
+  
+  async createUser(userData) {
+    return await this.request('/users', {
+      method: 'POST',
+      body: userData
+    });
+  },
+  
+  async updateUser(id, userData) {
+    return await this.request(`/users/${id}`, {
+      method: 'PUT',
+      body: userData
+    });
+  },
+  
+  async deleteUser(id) {
+    return await this.request(`/users/${id}`, {
+      method: 'DELETE'
+    });
+  }
+};
+
+// Define routes
+PA.router.add('/', () => {
+  PA.router.navigate('/dashboard');
+});
+
+PA.router.add('/dashboard', () => {
+  loadPage('dashboard');
+});
+
+PA.router.add('/users', () => {
+  loadPage('users');
+});
+
+PA.router.add('/users/:id', ({ params }) => {
+  loadPage('user-detail', params.id);
+});
+
+PA.router.add('/login', () => {
+  loadPage('login');
+});
+
+// Page loading function
+async function loadPage(page, ...args) {
+  const contentEl = document.getElementById('content');
+  
+  try {
+    // Show loading state
+    contentEl.innerHTML = `
+      <div class="pa-loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        Loading...
+      </div>
+    `;
+    
+    // Load page content
+    let html;
+    switch (page) {
+      case 'dashboard':
+        html = await loadDashboard();
+        break;
+      case 'users':
+        html = await loadUsers();
+        break;
+      case 'user-detail':
+        html = await loadUserDetail(args[0]);
+        break;
+      case 'login':
+        html = loadLogin();
+        break;
+      default:
+        html = '<div class="pa-error">Page not found</div>';
+    }
+    
+    // Update content
+    contentEl.innerHTML = html;
+    
+    // Process new hypermedia attributes
+    PA.hypermedia.scan(contentEl);
+    
+    // Update current page in state
+    PA.store.setState({ currentPage: page });
+    
+  } catch (error) {
+    contentEl.innerHTML = `
+      <div class="pa-error">
+        <h3>Error loading page</h3>
+        <p>${error.message}</p>
+      </div>
+    `;
+  }
+}
+
+// Page content generators
+async function loadDashboard() {
+  const stats = await api.request('/dashboard/stats');
+  
+  return `
+    <div class="pa-page-header">
+      <h1>Dashboard</h1>
+      <p>Welcome back, ${appState.value.user?.name}!</p>
+    </div>
+    
+    <div class="pa-grid pa-grid-cols-1 pa-md:grid-cols-2 pa-lg:grid-cols-4">
+      <div class="pa-card pa-stat-card">
+        <div class="pa-stat-value">${stats.users}</div>
+        <div class="pa-stat-label">Users</div>
+      </div>
+      <div class="pa-card pa-stat-card">
+        <div class="pa-stat-value">${stats.orders}</div>
+        <div class="pa-stat-label">Orders</div>
+      </div>
+      <div class="pa-card pa-stat-card">
+        <div class="pa-stat-value">${stats.revenue}</div>
+        <div class="pa-stat-label">Revenue</div>
+      </div>
+      <div class="pa-card pa-stat-card">
+        <div class="pa-stat-value">${stats.growth}%</div>
+        <div class="pa-stat-label">Growth</div>
+      </div>
+    </div>
+    
+    <div class="pa-card pa-mt-4">
+      <div class="pa-card-header">
+        <h3>Recent Activity</h3>
+      </div>
+      <div class="pa-card-body">
+        <div id="activity-chart"></div>
+      </div>
+    </div>
+  `;
+}
+
+async function loadUsers() {
+  const users = await api.getUsers();
+  
+  return `
+    <div class="pa-page-header">
+      <h1>Users</h1>
+      <button class="pa-button pa-button-primary" pa-on:click="showCreateUserModal()">
+        <i class="fas fa-plus"></i> Add User
+      </button>
+    </div>
+    
+    <div class="pa-card">
+      <div class="pa-card-body">
+        <div class="pa-table-container">
+          <table class="pa-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${users.map(user => `
+                <tr>
+                  <td>${user.name}</td>
+                  <td>${user.email}</td>
+                  <td>
+                    <span class="pa-badge pa-badge-${user.role === 'admin' ? 'primary' : 'secondary'}">
+                      ${user.role}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="pa-badge pa-badge-${user.active ? 'success' : 'danger'}">
+                      ${user.active ? 'Active' : 'Inactive'}
+                    </span>
+                  </td>
+                  <td>
+                    <button class="pa-button pa-button-text" pa-link="/users/${user.id}">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="pa-button pa-button-text pa-text-danger" pa-on:click="deleteUser('${user.id}')">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function loadUserDetail(userId) {
+  const user = await api.request(`/users/${userId}`);
+  
+  return `
+    <div class="pa-page-header">
+      <button class="pa-button pa-button-text" pa-link="/users">
+        <i class="fas fa-arrow-left"></i> Back to Users
+      </button>
+      <h1>User Details</h1>
+    </div>
+    
+    <div class="pa-grid pa-grid-cols-1 pa-lg:grid-cols-3">
+      <div class="pa-lg:col-span-1">
+        <div class="pa-card">
+          <div class="pa-card-body pa-text-center">
+            <div class="pa-avatar pa-avatar-large">
+              <img src="${user.avatar || '/assets/default-avatar.png'}" alt="${user.name}">
+            </div>
+            <h3>${user.name}</h3>
+            <p class="pa-text-muted">${user.email}</p>
+            <span class="pa-badge pa-badge-${user.role === 'admin' ? 'primary' : 'secondary'}">
+              ${user.role}
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="pa-lg:col-span-2">
+        <div class="pa-card">
+          <div class="pa-card-header">
+            <h3>User Information</h3>
+            <button class="pa-button pa-button-text" pa-on:click="editUser('${user.id}')">
+              <i class="fas fa-edit"></i> Edit
+            </button>
+          </div>
+          <div class="pa-card-body">
+            <div class="pa-form-group">
+              <label class="pa-label">Name</label>
+              <input type="text" class="pa-input-text" value="${user.name}" readonly>
+            </div>
+            <div class="pa-form-group">
+              <label class="pa-label">Email</label>
+              <input type="email" class="pa-input-text" value="${user.email}" readonly>
+            </div>
+            <div class="pa-form-group">
+              <label class="pa-label">Role</label>
+              <input type="text" class="pa-input-text" value="${user.role}" readonly>
+            </div>
+            <div class="pa-form-group">
+              <label class="pa-label">Status</label>
+              <div>
+                <span class="pa-badge pa-badge-${user.active ? 'success' : 'danger'}">
+                  ${user.active ? 'Active' : 'Inactive'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function loadLogin() {
+  return `
+    <div class="pa-auth-container">
+      <div class="pa-card pa-auth-card">
+        <div class="pa-card-header pa-text-center">
+          <h1>Login</h1>
+          <p>Please sign in to your account</p>
+        </div>
+        <div class="pa-card-body">
+          <form id="loginForm" pa-on:submit="handleLogin">
+            <div class="pa-form-group">
+              <label class="pa-label" for="email">Email</label>
+              <input 
+                type="email" 
+                id="email" 
+                class="pa-input-text" 
+                placeholder="Enter your email"
+                required
+              >
+            </div>
+            <div class="pa-form-group">
+              <label class="pa-label" for="password">Password</label>
+              <input 
+                type="password" 
+                id="password" 
+                class="pa-input-text" 
+                placeholder="Enter your password"
+                required
+              >
+            </div>
+            <button type="submit" class="pa-button pa-button-primary pa-w-full">
+              Sign In
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Event handlers
+window.handleLogin = async function(e) {
+  e.preventDefault();
+  
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  
+  try {
+    await api.login({ email, password });
+    PA.notifications.show('Login successful!', 'success');
+    PA.router.navigate('/dashboard');
+  } catch (error) {
+    PA.notifications.show('Login failed: ' + error.message, 'danger');
+  }
+};
+
+window.showCreateUserModal = function() {
+  // Implementation for showing a create user modal
+  PA.notifications.show('Create user modal not implemented yet', 'info');
+};
+
+window.deleteUser = async function(userId) {
+  if (confirm('Are you sure you want to delete this user?')) {
+    try {
+      await api.deleteUser(userId);
+      PA.notifications.show('User deleted successfully', 'success');
+      loadUsers(); // Reload the users list
+    } catch (error) {
+      PA.notifications.show('Failed to delete user: ' + error.message, 'danger');
+    }
+  }
+};
+
+// Check authentication on load
+function checkAuth() {
+  const token = localStorage.getItem('authToken');
+  if (token) {
+    // Verify token with backend
+    api.request('/auth/verify')
+      .then(response => {
+        PA.store.setState({ user: response.user });
+      })
+      .catch(() => {
+        // Token invalid, redirect to login
+        localStorage.removeItem('authToken');
+        PA.router.navigate('/login');
+      });
+  } else {
+    // No token, redirect to login
+    PA.router.navigate('/login');
+  }
+}
+
+// Initialize authentication check
+checkAuth();
+
+// Handle global errors
+PA.events.on('ajax:error', (data) => {
+  if (data.error.status === 401) {
+    // Unauthorized, redirect to login
+    localStorage.removeItem('authToken');
+    PA.router.navigate('/login');
+  }
+});
+```
+
+## Advanced Patterns
+
+### 1. Component-Based Architecture
+
+Create reusable components:
+
+```javascript
+// Define a reusable user card component
+PA.component.register('user-card', {
+  template: `
+    <div class="pa-card pa-user-card">
+      <div class="pa-card-body">
+        <div class="pa-user-avatar">
+          <img src="{{user.avatar}}" alt="{{user.name}}">
+        </div>
+        <h3 class="pa-user-name">{{user.name}}</h3>
+        <p class="pa-user-email">{{user.email}}</p>
+        <div class="pa-user-actions">
+          <button class="pa-button pa-button-text" pa-on:click="viewUser('{{user.id}}')">
+            View Profile
+          </button>
+        </div>
+      </div>
+    </div>
+  `,
+  
+  onMount: function(el) {
+    // Component initialization logic
+    console.log('User card mounted');
+  },
+  
+  onUpdate: function(el) {
+    // Component update logic
+    console.log('User card updated');
+  }
+});
+
+// Use the component
+const userCards = users.map(user => 
+  PA.component.render('user-card', { user })
+).join('');
+```
+
+### 2. State Management with Signals
+
+Use signals for reactive state management:
+
+```javascript
+// Create signals for reactive data
+const users = PA.signal([]);
+const loading = PA.signal(false);
+const searchQuery = PA.signal('');
+
+// Create computed signal for filtered users
+const filteredUsers = PA.computed(() => {
+  return users.value.filter(user => 
+    user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+});
+
+// Create effect to react to changes
+PA.effect(() => {
+  console.log('Users updated:', users.value);
+});
+
+// Update signals
+loading.value = true;
+api.getUsers().then(data => {
+  users.value = data;
+  loading.value = false;
+});
+```
+
+### 3. Optimistic Updates
+
+Implement optimistic updates for better UX:
+
+```javascript
+async function updateUser(userId, userData) {
+  // Create optimistic update
+  const originalUsers = [...users.value];
+  const updatedUsers = users.value.map(user => 
+    user.id === userId ? { ...user, ...userData } : user
+  );
+  
+  // Update UI immediately
+  users.value = updatedUsers;
+  
+  try {
+    // Make API call
+    await api.updateUser(userId, userData);
+    PA.notifications.show('User updated successfully', 'success');
+  } catch (error) {
+    // Revert on error
+    users.value = originalUsers;
+    PA.notifications.show('Failed to update user', 'danger');
+  }
+}
+```
+
+### 4. Real-time Updates with WebSockets
+
+Implement real-time updates:
+
+```javascript
+// WebSocket connection
+const socket = PA.ws.connect('wss://api.example.com/ws');
+
+// Listen for updates
+socket.on('user-updated', (data) => {
+  const updatedUsers = users.value.map(user => 
+    user.id === data.id ? { ...user, ...data } : user
+  );
+  users.value = updatedUsers;
+});
+
+socket.on('user-deleted', (data) => {
+  users.value = users.value.filter(user => user.id !== data.id);
+});
+```
+
+## Best Practices
+
+1. **Progressive Enhancement**: Start with basic HTML functionality and enhance with JavaScript
+2. **Error Boundaries**: Implement proper error handling at component and route levels
+3. **Loading States**: Always show loading indicators during async operations
+4. **Form Validation**: Validate both client-side and server-side
+5. **Accessibility**: Use semantic HTML and ARIA attributes
+6. **Performance**: Use code splitting and lazy loading for large applications
+7. **Security**: Sanitize user input and use HTTPS for all API calls
+8. **Testing**: Write tests for critical functionality
+
+This design system and SPA architecture provides a solid foundation for building modern web applications with excellent user experience and maintainable code structure.
+
+
+
+
+==========================================
+COOOK BOOK SHOWCASING ALL FEATURES TO ENABLE DEVS TO LEARN BY EXAMPLE
+======================================================
+
