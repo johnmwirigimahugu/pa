@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PA.js - The Ultimate Universal JavaScript Framework</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        'pa-primary': '#6366f1',
+                        'pa-secondary': '#8b5cf6',
+                        'pa-accent': '#ec4899',
+                        'pa-dark': '#1e293b',
+                        'pa-darker': '#0f172a',
+                    },
+                    animation: {
+                        'gradient': 'gradient 8s linear infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        gradient: {
+                            '0%, 100%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'left center'
+                            },
+                            '50%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'right center'
+                            }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-size: 200% 200%;
+            animation: gradient 15s ease infinite;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .code-block {
+            font-family: 'JetBrains Mono', monospace;
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 16px;
+            overflow-x: auto;
+        }
+        
+        .hidden { display: none; }
+        
+        .page { display: none; }
+        .page.active { display: block; }
+        
+        .feature-card {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        
+        .tab-button {
+            transition: all 0.2s ease;
+        }
+        
+        .tab-button.active {
+            background: rgba(99, 102, 241, 0.1);
+            color: #6366f1;
+            border-bottom: 2px solid #6366f1;
+        }
+        
+        .scroll-smooth {
+            scroll-behavior: smooth;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .glow {
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+        }
+        
+        .timeline-dot {
+            position: relative;
+        }
+        
+        .timeline-dot::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 100%;
+            background: rgba(99, 102, 241, 0.3);
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .timeline-item:last-child .timeline-dot::after {
+            display: none;
+        }
+        
+        .demo-container {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .demo-header {
+            background: #f8fafc;
+            padding: 8px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .demo-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        
+        .demo-content {
+            padding: 16px;
+            background: white;
+        }
+        
+        @media (max-width: 768px) {
+            .timeline-dot::after {
+                left: 20px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 scroll-smooth">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-gradient-to-br from-pa-primary to-pa-secondary rounded-lg flex items-center justify-center text-white font-bold">
+                        PA
+                    </div>
+                    <span class="text-xl font-bold">PA.js</span>
+                </div>
+                
+                <div class="hidden md:flex space-x-8">
+                    <a href="#" data-page="home" class="nav-link text-gray-700 hover:text-pa-primary transition-colors">Home</a>
+                    <a href="#" data-page="features" class="nav-link text-gray-700 hover:text-pa-primary transition-colors">Features</a>
+                    <a href="#" data-page="docs" class="nav-link text-gray-700 hover:text-pa-primary transition-colors">Documentation</a>
+                    <a href="#" data-page="examples" class="nav-link text-gray-700 hover:text-pa-primary transition-colors">Examples</a>
+                    <a href="#" data-page="roadmap" class="nav-link text-gray-700 hover:text-pa-primary transition-colors">Roadmap</a>
+                    <a href="#" data-page="download" class="nav-link text-gray-700 hover:text-pa-primary transition-colors">Download</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="https://github.com" target="_blank" class="text-gray-700 hover:text-pa-primary transition-colors">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                    <button id="mobile-menu-toggle" class="md:hidden text-gray-700">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4">
+                <a href="#" data-page="home" class="block py-2 text-gray-700 hover:text-pa-primary transition-colors">Home</a>
+                <a href="#" data-page="features" class="block py-2 text-gray-700 hover:text-pa-primary transition-colors">Features</a>
+                <a href="#" data-page="docs" class="block py-2 text-gray-700 hover:text-pa-primary transition-colors">Documentation</a>
+                <a href="#" data-page="examples" class="block py-2 text-gray-700 hover:text-pa-primary transition-colors">Examples</a>
+                <a href="#" data-page="roadmap" class="block py-2 text-gray-700 hover:text-pa-primary transition-colors">Roadmap</a>
+                <a href="#" data-page="download" class="block py-2 text-gray-700 hover:text-pa-primary transition-colors">Download</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="pt-16">
+        <!-- Home Page -->
+        <div id="home" class="page active">
+            <!-- Hero Section -->
+            <section class="hero-gradient text-white py-20 md:py-32">
+                <div class="container mx-auto px-4">
+                    <div class="max-w-4xl mx-auto text-center">
+                        <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                            🌟 UNICORN-PA 3.3
+                        </h1>
+                        <p class="text-xl md:text-2xl mb-8 opacity-90">
+                            The Ultimate Universal JavaScript Framework
+                        </p>
+                        <p class="text-lg mb-10 max-w-2xl mx-auto opacity-80">
+                            A comprehensive, zero-dependency framework that runs seamlessly on both client and server, combining the best features from multiple frameworks into a single, cohesive solution.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                            <button data-page="download" class="bg-white text-pa-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                                <i class="fas fa-download mr-2"></i> Download Now
+                            </button>
+                            <button data-page="docs" class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-pa-primary transition-colors">
+                                <i class="fas fa-book mr-2"></i> Get Started
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Key Features -->
+            <section class="py-16">
+                <div class="container mx-auto px-4">
+                    <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Why Choose PA.js?</h2>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-pa-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-rocket text-pa-primary text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Zero Dependencies</h3>
+                            <p class="text-gray-600">Completely self-contained with no external dependencies, making it lightweight and reliable.</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-pa-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-sync text-pa-primary text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Universal</h3>
+                            <p class="text-gray-600">Runs seamlessly on both client and server with the same codebase.</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-pa-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-bolt text-pa-primary text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">High Performance</h3>
+                            <p class="text-gray-600">Virtual DOM with neural morphing engine for optimal rendering performance.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Quick Stats -->
+            <section class="py-16 bg-gray-100">
+                <div class="container mx-auto px-4">
+                    <div class="grid md:grid-cols-4 gap-8 text-center">
+                        <div>
+                            <div class="text-4xl font-bold text-pa-primary mb-2">3.3</div>
+                            <div class="text-gray-600">Current Version</div>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-bold text-pa-primary mb-2">0</div>
+                            <div class="text-gray-600">Dependencies</div>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-bold text-pa-primary mb-2">25+</div>
+                            <div class="text-gray-600">Built-in Features</div>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-bold text-pa-primary mb-2">MIT</div>
+                            <div class="text-gray-600">License</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <!-- Features Page -->
+        <div id="features" class="page">
+            <section class="py-16">
+                <div class="container mx-auto px-4">
+                    <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Framework Features</h2>
+                    
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- State Management -->
+                        <div class="feature-card bg-white rounded-lg p-6 shadow-md">
+                            <div class="w-12 h-12 bg-pa-primary/10 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-database text-pa-primary text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Enhanced State Management</h3>
+                            <p class="text-gray-600 mb-4">Advanced state management with time-travel debugging and reactive signals.</p>
+                            <ul class="text-sm text-gray-500 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Time-travel debugging</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Reactive signals</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Computed properties</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Component System -->
+                        <div class="feature-card bg-white rounded-lg p-6 shadow-md">
+                            <div class="w-12 h-12 bg-pa-primary/10 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-cubes text-pa-primary text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Universal Component System</h3>
+                            <p class="text-gray-600 mb-4">Component-based architecture with lifecycle hooks and reactive bindings.</p>
+                            <ul class="text-sm text-gray-500 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Lifecycle hooks</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Reactive bindings</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Template system</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Routing -->
+                        <div class="feature-card bg-white rounded-lg p-6 shadow-md">
+                            <div class="w-12 h-12 bg-pa-primary/10 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-route text-pa-primary text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Advanced Routing</h3>
+                            <p class="text-gray-600 mb-4">Powerful routing system with lazy loading and route guards.</p>
+                            <ul class="text-sm text-gray-500 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Lazy loading</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Route guards</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Dynamic routes</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Virtual DOM -->
+                        <div class="feature-card bg-white rounded-lg p-6 shadow-md">
+                            <div class="w-12 h-12 bg-pa-primary/10 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-project-diagram text-pa-primary text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Virtual DOM</h3>
+                            <p class="text-gray-600 mb-4">High-performance virtual DOM with neural morphing engine.</p>
+                            <ul class="text-sm text-gray-500 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Neural morphing</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Efficient updates</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Minimal reflows</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- WebSocket -->
+                        <div class="feature-card bg-white rounded-lg p-6 shadow-md">
+                            <div class="w-12 h-12 bg-pa-primary/10 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-plug text-pa-primary text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">WebSocket Implementation</h3>
+                            <p class="text-gray-600 mb-4">Zero-dependency WebSocket implementation for real-time communication.</p>
+                            <ul class="text-sm text-gray-500 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Real-time updates</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Auto-reconnection</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Binary support</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Multithreading -->
+                        <div class="feature-card bg-white rounded-lg p-6 shadow-md">
+                            <div class="w-12 h-12 bg-pa-primary/10 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-microchip text-pa-primary text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Multithreading Support</h3>
+                            <p class="text-gray-600 mb-4">Enhanced multithreading support for CPU-intensive tasks.</p>
+                            <ul class="text-sm text-gray-500 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Worker pool</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Task scheduling</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Load balancing</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- CSS Framework -->
+                        <div class="feature-card bg-white rounded-lg p-6 shadow-md">
+                            <div class="w-12 h-12 bg-pa-primary/10 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-palette text-pa-primary text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">CSS Framework</h3>
+                            <p class="text-gray-600 mb-4">Comprehensive CSS framework with pa- prefix to avoid conflicts.</p>
+                            <ul class="text-sm text-gray-500 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Utility classes</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Responsive design</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Theme system</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Built-in ORM -->
+                        <div class="feature-card bg-white rounded-lg p-6 shadow-md">
+                            <div class="w-12 h-12 bg-pa-primary/10 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-server text-pa-primary text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Built-in ORM (pajsDB)</h3>
+                            <p class="text-gray-600 mb-4">Powerful ORM with multiple storage engines support.</p>
+                            <ul class="text-sm text-gray-500 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Multiple engines</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Query builder</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Migrations</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- API Client -->
+                        <div class="feature-card bg-white rounded-lg p-6 shadow-md">
+                            <div class="w-12 h-12 bg-pa-primary/10 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-exchange-alt text-pa-primary text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">API Client</h3>
+                            <p class="text-gray-600 mb-4">Built-in API client with AJAX-like functionality.</p>
+                            <ul class="text-sm text-gray-500 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>RESTful support</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Request interceptors</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Error handling</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Mobile Development -->
+                        <div class="feature-card bg-white rounded-lg p-6 shadow-md">
+                            <div class="w-12 h-12 bg-pa-primary/10 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-mobile-alt text-pa-primary text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Mobile Development</h3>
+                            <p class="text-gray-600 mb-4">Enhanced mobile development capabilities with geolocation support.</p>
+                            <ul class="text-sm text-gray-500 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Touch gestures</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Geolocation</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Device APIs</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Web CLI -->
+                        <div class="feature-card bg-white rounded-lg p-6 shadow-md">
+                            <div class="w-12 h-12 bg-pa-primary/10 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-terminal text-pa-primary text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Web CLI</h3>
+                            <p class="text-gray-600 mb-4">In-browser command-line interface for development and debugging.</p>
+                            <ul class="text-sm text-gray-500 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Command execution</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Auto-completion</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>History</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Chart System -->
+                        <div class="feature-card bg-white rounded-lg p-6 shadow-md">
+                            <div class="w-12 h-12 bg-pa-primary/10 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-chart-bar text-pa-primary text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Chart System</h3>
+                            <p class="text-gray-600 mb-4">Built-in chart system for data visualization.</p>
+                            <ul class="text-sm text-gray-500 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Multiple chart types</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Interactive</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Responsive</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Shopping Cart -->
+                        <div class="feature-card bg-white rounded-lg p-6 shadow-md">
+                            <div class="w-12 h-12 bg-pa-primary/10 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-shopping-cart text-pa-primary text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Shopping Cart</h3>
+                            <p class="text-gray-600 mb-4">Complete shopping cart functionality for e-commerce applications.</p>
+                            <ul class="text-sm text-gray-500 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Persistence</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Events</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>PayPal integration</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <!-- Documentation Page -->
+        <div id="docs" class="page">
+            <section class="py-16">
+                <div class="container mx-auto px-4">
+                    <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Documentation</h2>
+                    
+                    <!-- Tab Navigation -->
+                    <div class="flex flex-wrap justify-center mb-8 border-b">
+                        <button class="tab-button active px-6 py-3 font-medium" data-tab="installation">Installation</button>
+                        <button class="tab-button px-6 py-3 font-medium" data-tab="quickstart">Quick Start</button>
+                        <button class="tab-button px-6 py-3 font-medium" data-tab="components">Components</button>
+                        <button class="tab-button px-6 py-3 font-medium" data-tab="state">State Management</button>
+                        <button class="tab-button px-6 py-3 font-medium" data-tab="routing">Routing</button>
+                    </div>
+                    
+                    <!-- Tab Content -->
+                    <div class="max-w-4xl mx-auto">
+                        <!-- Installation Tab -->
+                        <div id="installation" class="tab-content">
+                            <h3 class="text-2xl font-bold mb-4">Installation</h3>
+                            <p class="mb-4">PA.js is a zero-dependency framework. You can include it in your project in several ways:</p>
+                            
+                            <h4 class="text-lg font-semibold mb-2">CDN</h4>
+                            <div class="code-block mb-6">
+                                <pre class="text-green-400">&lt;script src="https://cdn.jsdelivr.net/npm/pa.js@latest/dist/pa.min.js"&gt;&lt;/script&gt;</pre>
+                            </div>
+                            
+                            <h4 class="text-lg font-semibold mb-2">NPM</h4>
+                            <div class="code-block mb-6">
+                                <pre class="text-green-400">npm install pa.js</pre>
+                            </div>
+                            
+                            <h4 class="text-lg font-semibold mb-2">Download</h4>
+                            <p class="mb-4">Download the latest version from the <a href="#" data-page="download" class="text-pa-primary hover:underline">download page</a>.</p>
+                        </div>
+                        
+                        <!-- Quick Start Tab -->
+                        <div id="quickstart" class="tab-content hidden">
+                            <h3 class="text-2xl font-bold mb-4">Quick Start</h3>
+                            <p class="mb-4">Get started with PA.js in just a few minutes:</p>
+                            
+                            <h4 class="text-lg font-semibold mb-2">1. Create an HTML file</h4>
+                            <div class="code-block mb-6">
+                                <pre class="text-green-400">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;My PA.js App&lt;/title&gt;
+    &lt;script src="https://cdn.jsdelivr.net/npm/pa.js@latest/dist/pa.min.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id="app"&gt;&lt;/div&gt;
+    &lt;script&gt;
+        // Your PA.js code here
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+                            </div>
+                            
+                            <h4 class="text-lg font-semibold mb-2">2. Create your first component</h4>
+                            <div class="code-block mb-6">
+                                <pre class="text-green-400">const app = PA.createApp({
+    data: {
+        message: 'Hello, PA.js!'
+    },
+    template: `
+        &lt;div&gt;
+            &lt;h1&gt;{{message}}&lt;/h1&gt;
+            &lt;button pa-on:click="updateMessage"&gt;Click Me&lt;/button&gt;
+        &lt;/div&gt;
+    `,
+    methods: {
+        updateMessage() {
+            this.message = 'Button clicked!';
+        }
+    }
+});
+
+app.mount('#app');</pre>
+                            </div>
+                        </div>
+                        
+                        <!-- Components Tab -->
+                        <div id="components" class="tab-content hidden">
+                            <h3 class="text-2xl font-bold mb-4">Components</h3>
+                            <p class="mb-4">Components are the building blocks of PA.js applications:</p>
+                            
+                            <h4 class="text-lg font-semibold mb-2">Creating a Component</h4>
+                            <div class="code-block mb-6">
+                                <pre class="text-green-400">PA.component('my-component', {
+    props: ['title'],
+    data() {
+        return {
+            count: 0
+        }
+    },
+    template: `
+        &lt;div class="card"&gt;
+            &lt;h3&gt;{{title}}&lt;/h3&gt;
+            &lt;p&gt;Count: {{count}}&lt;/p&gt;
+            &lt;button pa-on:click="increment"&gt;+&lt;/button&gt;
+        &lt;/div&gt;
+    `,
+    methods: {
+        increment() {
+            this.count++;
+        }
+    }
+});</pre>
+                            </div>
+                            
+                            <h4 class="text-lg font-semibold mb-2">Using a Component</h4>
+                            <div class="code-block mb-6">
+                                <pre class="text-green-400">&lt;my-component title="Counter"&gt;&lt;/my-component&gt;</pre>
+                            </div>
+                        </div>
+                        
+                        <!-- State Management Tab -->
+                        <div id="state" class="tab-content hidden">
+                            <h3 class="text-2xl font-bold mb-4">State Management</h3>
+                            <p class="mb-4">PA.js provides a powerful state management system with reactive signals:</p>
+                            
+                            <h4 class="text-lg font-semibold mb-2">Creating a Store</h4>
+                            <div class="code-block mb-6">
+                                <pre class="text-green-400">const store = PA.createStore({
+    state: {
+        user: null,
+        todos: []
+    },
+    mutations: {
+        setUser(state, user) {
+            state.user = user;
+        },
+        addTodo(state, todo) {
+            state.todos.push(todo);
+        }
+    },
+    actions: {
+        async login({ commit }, credentials) {
+            const user = await api.login(credentials);
+            commit('setUser', user);
+        }
+    }
+});</pre>
+                            </div>
+                            
+                            <h4 class="text-lg font-semibold mb-2">Using the Store</h4>
+                            <div class="code-block mb-6">
+                                <pre class="text-green-400">// In a component
+export default {
+    computed: {
+        user() {
+            return store.state.user;
+        }
+    },
+    methods: {
+        login() {
+            store.dispatch('login', this.credentials);
+        }
+    }
+}</pre>
+                            </div>
+                        </div>
+                        
+                        <!-- Routing Tab -->
+                        <div id="routing" class="tab-content hidden">
+                            <h3 class="text-2xl font-bold mb-4">Routing</h3>
+                            <p class="mb-4">PA.js includes a powerful routing system for single-page applications:</p>
+                            
+                            <h4 class="text-lg font-semibold mb-2">Defining Routes</h4>
+                            <div class="code-block mb-6">
+                                <pre class="text-green-400">const routes = [
+    { path: '/', component: Home },
+    { path: '/about', component: About },
+    { path: '/users/:id', component: User }
+];
+
+const router = PA.createRouter({
+    routes
+});</pre>
+                            </div>
+                            
+                            <h4 class="text-lg font-semibold mb-2">Navigation</h4>
+                            <div class="code-block mb-6">
+                                <pre class="text-green-400">&lt;!-- In template --&gt;
+&lt;a pa-link href="/about"&gt;About&lt;/a&gt;
+
+&lt;!-- Programmatically --&gt;
+router.push('/about');</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <!-- Examples Page -->
+        <div id="examples" class="page">
+            <section class="py-16">
+                <div class="container mx-auto px-4">
+                    <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Live Examples</h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Counter Example -->
+                        <div class="demo-container">
+                            <div class="demo-header">
+                                <div class="flex items-center">
+                                    <div class="demo-dot bg-red-500"></div>
+                                    <div class="demo-dot bg-yellow-500"></div>
+                                    <div class="demo-dot bg-green-500"></div>
+                                    <span class="ml-4 font-medium">Counter Example</span>
+                                </div>
+                            </div>
+                            <div class="demo-content">
+                                <div id="counter-example" class="text-center p-4">
+                                    <h3 class="text-xl font-semibold mb-4">Reactive Counter</h3>
+                                    <div class="text-4xl font-bold mb-4 text-pa-primary">0</div>
+                                    <div class="flex justify-center space-x-4">
+                                        <button id="decrement" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded">-</button>
+                                        <button id="increment" class="bg-pa-primary hover:bg-pa-secondary text-white px-4 py-2 rounded">+</button>
+                                        <button id="reset" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded">Reset</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Todo List Example -->
+                        <div class="demo-container">
+                            <div class="demo-header">
+                                <div class="flex items-center">
+                                    <div class="demo-dot bg-red-500"></div>
+                                    <div class="demo-dot bg-yellow-500"></div>
+                                    <div class="demo-dot bg-green-500"></div>
+                                    <span class="ml-4 font-medium">Todo List</span>
+                                </div>
+                            </div>
+                            <div class="demo-content">
+                                <div id="todo-example" class="p-4">
+                                    <h3 class="text-xl font-semibold mb-4">Todo List</h3>
+                                    <div class="flex mb-4">
+                                        <input id="todo-input" type="text" placeholder="Add a new task" class="flex-1 border rounded-l px-3 py-2">
+                                        <button id="add-todo" class="bg-pa-primary hover:bg-pa-secondary text-white px-4 py-2 rounded-r">Add</button>
+                                    </div>
+                                    <ul id="todo-list" class="space-y-2">
+                                        <!-- Todos will be added here -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Shopping Cart Example -->
+                        <div class="demo-container">
+                            <div class="demo-header">
+                                <div class="flex items-center">
+                                    <div class="demo-dot bg-red-500"></div>
+                                    <div class="demo-dot bg-yellow-500"></div>
+                                    <div class="demo-dot bg-green-500"></div>
+                                    <span class="ml-4 font-medium">Shopping Cart</span>
+                                </div>
+                            </div>
+                            <div class="demo-content">
+                                <div id="cart-example" class="p-4">
+                                    <h3 class="text-xl font-semibold mb-4">Shopping Cart</h3>
+                                    <div class="space-y-2 mb-4">
+                                        <div class="flex justify-between items-center p-2 border rounded">
+                                            <span>Product A</span>
+                                            <div class="flex items-center space-x-2">
+                                                <button class="cart-decrease bg-gray-200 hover:bg-gray-300 w-8 h-8 rounded" data-id="1">-</button>
+                                                <span class="cart-quantity w-8 text-center">0</span>
+                                                <button class="cart-increase bg-gray-200 hover:bg-gray-300 w-8 h-8 rounded" data-id="1">+</button>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between items-center p-2 border rounded">
+                                            <span>Product B</span>
+                                            <div class="flex items-center space-x-2">
+                                                <button class="cart-decrease bg-gray-200 hover:bg-gray-300 w-8 h-8 rounded" data-id="2">-</button>
+                                                <span class="cart-quantity w-8 text-center">0</span>
+                                                <button class="cart-increase bg-gray-200 hover:bg-gray-300 w-8 h-8 rounded" data-id="2">+</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="border-t pt-2">
+                                        <div class="flex justify-between font-semibold">
+                                            <span>Total:</span>
+                                            <span class="cart-total">$0.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- API Request Example -->
+                        <div class="demo-container">
+                            <div class="demo-header">
+                                <div class="flex items-center">
+                                    <div class="demo-dot bg-red-500"></div>
+                                    <div class="demo-dot bg-yellow-500"></div>
+                                    <div class="demo-dot bg-green-500"></div>
+                                    <span class="ml-4 font-medium">API Request</span>
+                                </div>
+                            </div>
+                            <div class="demo-content">
+                                <div id="api-example" class="p-4">
+                                    <h3 class="text-xl font-semibold mb-4">Random User API</h3>
+                                    <button id="fetch-user" class="bg-pa-primary hover:bg-pa-secondary text-white px-4 py-2 rounded mb-4">Fetch Random User</button>
+                                    <div id="user-info" class="p-4 border rounded hidden">
+                                        <!-- User info will be displayed here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <!-- Roadmap Page -->
+        <div id="roadmap" class="page">
+            <section class="py-16">
+                <div class="container mx-auto px-4">
+                    <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Roadmap</h2>
+                    
+                    <div class="max-w-4xl mx-auto">
+                        <div class="space-y-8">
+                            <!-- v1.1 -->
+                            <div class="timeline-item flex flex-col md:flex-row items-center">
+                                <div class="timeline-dot w-12 h-12 bg-pa-primary rounded-full flex items-center justify-center text-white font-bold mb-4 md:mb-0 md:mr-8">
+                                    v1.1
+                                </div>
+                                <div class="bg-white rounded-lg p-6 shadow-md flex-1">
+                                    <h3 class="text-xl font-semibold mb-2">Enhanced CLI Tooling</h3>
+                                    <p class="text-gray-600 mb-4">Improved command-line interface with project scaffolding capabilities.</p>
+                                    <ul class="text-sm text-gray-500 space-y-1">
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Project templates</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Code generators</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Hot module replacement</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- v1.2 -->
+                            <div class="timeline-item flex flex-col md:flex-row items-center">
+                                <div class="timeline-dot w-12 h-12 bg-pa-primary rounded-full flex items-center justify-center text-white font-bold mb-4 md:mb-0 md:mr-8">
+                                    v1.2
+                                </div>
+                                <div class="bg-white rounded-lg p-6 shadow-md flex-1">
+                                    <h3 class="text-xl font-semibold mb-2">GraphQL Engine</h3>
+                                    <p class="text-gray-600 mb-4">Built-in GraphQL engine with automatic schema generation.</p>
+                                    <ul class="text-sm text-gray-500 space-y-1">
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Schema introspection</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Query validation</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Resolver generation</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- v1.3 -->
+                            <div class="timeline-item flex flex-col md:flex-row items-center">
+                                <div class="timeline-dot w-12 h-12 bg-pa-primary rounded-full flex items-center justify-center text-white font-bold mb-4 md:mb-0 md:mr-8">
+                                    v1.3
+                                </div>
+                                <div class="bg-white rounded-lg p-6 shadow-md flex-1">
+                                    <h3 class="text-xl font-semibold mb-2">Advanced Caching</h3>
+                                    <p class="text-gray-600 mb-4">Advanced caching strategies and CDN integration.</p>
+                                    <ul class="text-sm text-gray-500 space-y-1">
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Edge caching</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Cache invalidation</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>CDN optimization</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- v1.4 -->
+                            <div class="timeline-item flex flex-col md:flex-row items-center">
+                                <div class="timeline-dot w-12 h-12 bg-pa-primary rounded-full flex items-center justify-center text-white font-bold mb-4 md:mb-0 md:mr-8">
+                                    v1.4
+                                </div>
+                                <div class="bg-white rounded-lg p-6 shadow-md flex-1">
+                                    <h3 class="text-xl font-semibold mb-2">ML-Powered Optimization</h3>
+                                    <p class="text-gray-600 mb-4">Machine learning-powered performance optimizations.</p>
+                                    <ul class="text-sm text-gray-500 space-y-1">
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Predictive rendering</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Smart bundling</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Performance profiling</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- v1.5 -->
+                            <div class="timeline-item flex flex-col md:flex-row items-center">
+                                <div class="timeline-dot w-12 h-12 bg-pa-primary rounded-full flex items-center justify-center text-white font-bold mb-4 md:mb-0 md:mr-8">
+                                    v1.5
+                                </div>
+                                <div class="bg-white rounded-lg p-6 shadow-md flex-1">
+                                    <h3 class="text-xl font-semibold mb-2">Distributed Computing</h3>
+                                    <p class="text-gray-600 mb-4">Distributed computing capabilities for large-scale applications.</p>
+                                    <ul class="text-sm text-gray-500 space-y-1">
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Service mesh</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Load balancing</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Fault tolerance</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- v2.0 -->
+                            <div class="timeline-item flex flex-col md:flex-row items-center">
+                                <div class="timeline-dot w-12 h-12 bg-pa-secondary rounded-full flex items-center justify-center text-white font-bold mb-4 md:mb-0 md:mr-8">
+                                    v2.0
+                                </div>
+                                <div class="bg-white rounded-lg p-6 shadow-md flex-1">
+                                    <h3 class="text-xl font-semibold mb-2">Full-Stack Framework</h3>
+                                    <p class="text-gray-600 mb-4">Complete full-stack framework with integrated frontend framework.</p>
+                                    <ul class="text-sm text-gray-500 space-y-1">
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Unified architecture</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>Isomorphic rendering</li>
+                                        <li><i class="fas fa-check text-green-500 mr-2"></i>End-to-end type safety</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <!-- Download Page -->
+        <div id="download" class="page">
+            <section class="py-16">
+                <div class="container mx-auto px-4">
+                    <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Download PA.js</h2>
+                    
+                    <div class="max-w-4xl mx-auto">
+                        <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                            <h3 class="text-2xl font-semibold mb-4">Current Version: 3.3.0</h3>
+                            <p class="text-gray-600 mb-6">Download the latest version of PA.js and start building amazing applications today.</p>
+                            
+                            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                                <div class="border rounded-lg p-6">
+                                    <h4 class="text-lg font-semibold mb-3">Development Version</h4>
+                                    <p class="text-gray-600 mb-4">Unminified version with comments for debugging and development.</p>
+                                    <button class="w-full bg-pa-primary hover:bg-pa-secondary text-white py-2 px-4 rounded transition-colors">
+                                        <i class="fas fa-download mr-2"></i>Download pa.js (245KB)
+                                    </button>
+                                </div>
+                                
+                                <div class="border rounded-lg p-6">
+                                    <h4 class="text-lg font-semibold mb-3">Production Version</h4>
+                                    <p class="text-gray-600 mb-4">Minified and optimized version for production use.</p>
+                                    <button class="w-full bg-pa-primary hover:bg-pa-secondary text-white py-2 px-4 rounded transition-colors">
+                                        <i class="fas fa-download mr-2"></i>Download pa.min.js (68KB)
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="border-t pt-6">
+                                <h4 class="text-lg font-semibold mb-3">CDN Links</h4>
+                                <div class="code-block">
+                                    <pre class="text-green-400">&lt;!-- Development --&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/pa.js@latest/dist/pa.js"&gt;&lt;/script&gt;
+
+&lt;!-- Production --&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/pa.js@latest/dist/pa.min.js"&gt;&lt;/script&gt;</pre>
+                                </div>
+                            </div>
+                            
+                            <div class="border-t pt-6 mt-6">
+                                <h4 class="text-lg font-semibold mb-3">NPM Installation</h4>
+                                <div class="code-block">
+                                    <pre class="text-green-400">npm install pa.js</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow-lg p-8">
+                            <h3 class="text-2xl font-semibold mb-4">Previous Versions</h3>
+                            <p class="text-gray-600 mb-6">Access previous versions of PA.js for legacy projects.</p>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead>
+                                        <tr class="border-b">
+                                            <th class="text-left py-2">Version</th>
+                                            <th class="text-left py-2">Release Date</th>
+                                            <th class="text-left py-2">Download</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b">
+                                            <td class="py-2">3.2.0</td>
+                                            <td class="py-2">June 15, 2025</td>
+                                            <td class="py-2">
+                                                <a href="#" class="text-pa-primary hover:underline">Download</a>
+                                            </td>
+                                        </tr>
+                                        <tr class="border-b">
+                                            <td class="py-2">3.1.0</td>
+                                            <td class="py-2">May 10, 2025</td>
+                                            <td class="py-2">
+                                                <a href="#" class="text-pa-primary hover:underline">Download</a>
+                                            </td>
+                                        </tr>
+                                        <tr class="border-b">
+                                            <td class="py-2">3.0.0</td>
+                                            <td class="py-2">April 1, 2025</td>
+                                            <td class="py-2">
+                                                <a href="#" class="text-pa-primary hover:underline">Download</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-pa-darker text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-pa-primary to-pa-secondary rounded-lg flex items-center justify-center text-white font-bold">
+                            PA
+                        </div>
+                        <span class="text-xl font-bold">PA.js</span>
+                    </div>
+                    <p class="text-gray-400">The Ultimate Universal JavaScript Framework</p>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" data-page="home" class="hover:text-white transition-colors">Home</a></li>
+                        <li><a href="#" data-page="features" class="hover:text-white transition-colors">Features</a></li>
+                        <li><a href="#" data-page="docs" class="hover:text-white transition-colors">Documentation</a></li>
+                        <li><a href="#" data-page="examples" class="hover:text-white transition-colors">Examples</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">Resources</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" data-page="roadmap" class="hover:text-white transition-colors">Roadmap</a></li>
+                        <li><a href="#" data-page="download" class="hover:text-white transition-colors">Download</a></li>
+                        <li><a href="https://github.com" target="_blank" class="hover:text-white transition-colors">GitHub</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">API Reference</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">Connect</h3>
+                    <div class="flex space-x-4">
+                        <a href="https://github.com" target="_blank" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-github text-xl"></i>
+                        </a>
+                        <a href="https://twitter.com" target="_blank" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="https://discord.com" target="_blank" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-discord text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 John Kesh Mahugu. MIT License.</p>
+                <p class="mt-2">Made with <i class="fas fa-heart text-red-500"></i> for the JavaScript community</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Simple routing system for single-page application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all navigation links
+            const navLinks = document.querySelectorAll('.nav-link, [data-page]');
+            const pages = document.querySelectorAll('.page');
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            // Function to show a specific page
+            function showPage(pageId) {
+                pages.forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                const targetPage = document.getElementById(pageId);
+                if (targetPage) {
+                    targetPage.classList.add('active');
+                }
+                
+                // Update active nav link
+                navLinks.forEach(link => {
+                    link.classList.remove('text-pa-primary');
+                    link.classList.add('text-gray-700');
+                });
+                
+                document.querySelectorAll(`[data-page="${pageId}"]`).forEach(link => {
+                    link.classList.remove('text-gray-700');
+                    link.classList.add('text-pa-primary');
+                });
+                
+                // Close mobile menu if open
+                mobileMenu.classList.add('hidden');
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }
+            
+            // Add click event to navigation links
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const pageId = this.getAttribute('data-page');
+                    if (pageId) {
+                        showPage(pageId);
+                    }
+                });
+            });
+            
+            // Mobile menu toggle
+            mobileMenuToggle.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Tab functionality for documentation
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Update active button
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show corresponding content
+                    tabContents.forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    
+                    const targetContent = document.getElementById(tabId);
+                    if (targetContent) {
+                        targetContent.classList.remove('hidden');
+                    }
+                });
+            });
+            
+            // Counter Example
+            let counter = 0;
+            const counterDisplay = document.querySelector('#counter-example .text-4xl');
+            
+            document.getElementById('increment').addEventListener('click', function() {
+                counter++;
+                counterDisplay.textContent = counter;
+            });
+            
+            document.getElementById('decrement').addEventListener('click', function() {
+                counter--;
+                counterDisplay.textContent = counter;
+            });
+            
+            document.getElementById('reset').addEventListener('click', function() {
+                counter = 0;
+                counterDisplay.textContent = counter;
+            });
+            
+            // Todo List Example
+            const todoInput = document.getElementById('todo-input');
+            const addTodoBtn = document.getElementById('add-todo');
+            const todoList = document.getElementById('todo-list');
+            let todos = [];
+            
+            function renderTodos() {
+                todoList.innerHTML = '';
+                todos.forEach((todo, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'flex justify-between items-center p-2 border rounded';
+                    li.innerHTML = `
+                        <span>${todo}</span>
+                        <button class="text-red-500 hover:text-red-700" data-index="${index}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    `;
+                    todoList.appendChild(li);
+                });
+                
+                // Add event listeners to delete buttons
+                document.querySelectorAll('#todo-list button').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const index = parseInt(this.getAttribute('data-index'));
+                        todos.splice(index, 1);
+                        renderTodos();
+                    });
+                });
+            }
+            
+            addTodoBtn.addEventListener('click', function() {
+                const text = todoInput.value.trim();
+                if (text) {
+                    todos.push(text);
+                    todoInput.value = '';
+                    renderTodos();
+                }
+            });
+            
+            todoInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addTodoBtn.click();
+                }
+            });
+            
+            // Shopping Cart Example
+            const cart = {
+                items: {
+                    1: { name: 'Product A', price: 10.00, quantity: 0 },
+                    2: { name: 'Product B', price: 15.00, quantity: 0 }
+                },
+                
+                updateQuantity(id, change) {
+                    this.items[id].quantity = Math.max(0, this.items[id].quantity + change);
+                    this.render();
+                },
+                
+                getTotal() {
+                    let total = 0;
+                    for (const id in this.items) {
+                        total += this.items[id].price * this.items[id].quantity;
+                    }
+                    return total;
+                },
+                
+                render() {
+                    for (const id in this.items) {
+                        const item = this.items[id];
+                        const quantityEl = document.querySelector(`.cart-increase[data-id="${id}"]`).parentElement.querySelector('.cart-quantity');
+                        quantityEl.textContent = item.quantity;
+                    }
+                    
+                    document.querySelector('.cart-total').textContent = `$${this.getTotal().toFixed(2)}`;
+                }
+            };
+            
+            document.querySelectorAll('.cart-increase').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    cart.updateQuantity(id, 1);
+                });
+            });
+            
+            document.querySelectorAll('.cart-decrease').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    cart.updateQuantity(id, -1);
+                });
+            });
+            
+            // API Request Example
+            document.getElementById('fetch-user').addEventListener('click', function() {
+                const userInfo = document.getElementById('user-info');
+                userInfo.innerHTML = '<p>Loading...</p>';
+                userInfo.classList.remove('hidden');
+                
+                // Simulate API call with setTimeout
+                setTimeout(() => {
+                    const names = ['John Doe', 'Jane Smith', 'Bob Johnson', 'Alice Brown'];
+                    const emails = ['john@example.com', 'jane@example.com', 'bob@example.com', 'alice@example.com'];
+                    const randomIndex = Math.floor(Math.random() * names.length);
+                    
+                    userInfo.innerHTML = `
+                        <div class="flex items-center space-x-4">
+                            <img src="https://picsum.photos/seed/user${randomIndex}/100/100.jpg" alt="User" class="w-16 h-16 rounded-full">
+                            <div>
+                                <h4 class="font-semibold">${names[randomIndex]}</h4>
+                                <p class="text-gray-600">${emails[randomIndex]}</p>
+                            </div>
+                        </div>
+                    `;
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>
